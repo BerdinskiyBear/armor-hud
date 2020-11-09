@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "armor_hud",
+  "version": "${version}",
+  "name": "BerdinskiyBear's ArmorHUD",
+  "description": "Shows your current armor and its durability.",
+  "authors": [
+    "BerdinskiyBear"
+  ],
+  "contributors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/armor_hud/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ru.berdinskiybear.armorhud.ArmorHudMod"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "armor_hud.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.10.6",
+    "fabric": "*"
+  }
+}
