@@ -1,5 +1,16 @@
 package ru.berdinskiybear.armorhud.config;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.Level;
+import ru.berdinskiybear.armorhud.ArmorHudMod;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ArmorHudConfig {
 
     private Anchor anchor;
@@ -20,9 +31,38 @@ public class ArmorHudConfig {
         this.reversed = true;
     }
 
-    public static ArmorHudConfig readConfig() {
-        return new ArmorHudConfig();
-        //TODO actual reading
+    public static ArmorHudConfig readConfigFile() {
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().serializeSpecialFloatingPointValues().create();
+        File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), ArmorHudMod.MOD_ID + ".json");
+        if (configFile.exists()) {
+            try (FileReader fileReader = new FileReader(configFile)) {
+                return gson.fromJson(fileReader, ArmorHudConfig.class);
+            } catch (IOException e) {
+                ArmorHudMod.log(Level.ERROR, "Config file " + configFile.getAbsolutePath() + " can't be read or has disappeared.");
+                ArmorHudMod.log(Level.ERROR, e.getLocalizedMessage());
+                return new ArmorHudConfig();
+            }
+        } else {
+            ArmorHudMod.log("Config file is missing, creating new one...");
+            return createNewConfigFile();
+        }
+    }
+
+    public static void writeConfigFile(ArmorHudConfig config) {
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().serializeSpecialFloatingPointValues().create();
+        File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), ArmorHudMod.MOD_ID + ".json");
+        try (FileWriter fileWriter = new FileWriter(configFile)) {
+            gson.toJson(config, ArmorHudConfig.class, fileWriter);
+        } catch (IOException e) {
+            ArmorHudMod.log(Level.ERROR, "Config file " + configFile.getAbsolutePath() + " can't be written so it probably wasn't written.");
+            ArmorHudMod.log(Level.ERROR, e.getLocalizedMessage());
+        }
+    }
+
+    private static ArmorHudConfig createNewConfigFile() {
+        ArmorHudConfig config = new ArmorHudConfig();
+        writeConfigFile(config);
+        return config;
     }
 
     public Anchor getAnchor() {

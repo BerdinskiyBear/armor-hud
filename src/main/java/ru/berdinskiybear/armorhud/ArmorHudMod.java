@@ -25,7 +25,7 @@ public class ArmorHudMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        setCurrentConfig(ArmorHudConfig.readConfig());
+        setCurrentConfig(ArmorHudConfig.readConfigFile());
     }
 
     public static void log(String message) {
@@ -33,7 +33,6 @@ public class ArmorHudMod implements ModInitializer {
     }
 
     public static void log(Level level, String message){
-        LOGGER.log(level, message);
+        LOGGER.log(level,"[" + MOD_NAME + "] " + message);
     }
-
 }
