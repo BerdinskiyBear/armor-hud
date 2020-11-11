@@ -13,19 +13,18 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import ru.berdinskiybear.armorhud.ArmorHudMod;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfigScreenBuilder;
 
 import java.util.ArrayList;
-
-import static ru.berdinskiybear.armorhud.ArmorHudMod.getCurrentConfig;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
 
     private int armorWidgetX;
     private int armorWidgetY;
-    private boolean usePreviewConfig;
+    ArmorHudConfig currentConfig;
 
     @Shadow
     protected abstract PlayerEntity getCameraPlayer();
@@ -42,8 +41,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setZOffset(I)V", ordinal = 1))
     public void renderArmorWidget(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
         PlayerEntity playerEntity = this.getCameraPlayer();
-        usePreviewConfig = MinecraftClient.getInstance().currentScreen instanceof AbstractConfigScreen && MinecraftClient.getInstance().currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title;
-        ArmorHudConfig currentConfig = usePreviewConfig ? ArmorHudConfigScreenBuilder.previewConfig : getCurrentConfig();
+        currentConfig = MinecraftClient.getInstance().currentScreen instanceof AbstractConfigScreen && MinecraftClient.getInstance().currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
         int step = 20;
         int width = 22;
         int height = 22;
@@ -143,7 +141,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
     public void renderArmorItems(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
         PlayerEntity playerEntity = this.getCameraPlayer();
         ArrayList<ItemStack> armorItems = new ArrayList<>(4);
-        ArmorHudConfig currentConfig = usePreviewConfig ? ArmorHudConfigScreenBuilder.previewConfig : getCurrentConfig();
         for (ItemStack itemStack : playerEntity.getArmorItems())
             if (!itemStack.isEmpty() || currentConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)
                 armorItems.add(itemStack);
