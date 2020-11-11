@@ -4,10 +4,12 @@ import me.shedaniel.clothconfig2.gui.AbstractConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.options.AttackIndicator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,10 +40,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Shadow
     protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack);
 
+    @Shadow
+    @Final
+    private MinecraftClient client;
+
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setZOffset(I)V", ordinal = 1))
     public void renderArmorWidget(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
         PlayerEntity playerEntity = this.getCameraPlayer();
-        currentConfig = MinecraftClient.getInstance().currentScreen instanceof AbstractConfigScreen && MinecraftClient.getInstance().currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
+        currentConfig = this.client.currentScreen instanceof AbstractConfigScreen && this.client.currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
         int step = 20;
         int width = 22;
         int height = 22;
@@ -88,7 +94,19 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     offhandSlotOffset = defaultOffhandSlotOffset;
                     break;
                 case ADHERE:
-                    if (((playerEntity.getMainArm().getOpposite() == Arm.LEFT && currentConfig.getSide() == ArmorHudConfig.Side.LEFT) || (playerEntity.getMainArm().getOpposite() == Arm.RIGHT && currentConfig.getSide() == ArmorHudConfig.Side.RIGHT)) && !playerEntity.getOffHandStack().isEmpty())
+                    if (
+                            (
+                                    (
+                                            (playerEntity.getMainArm().getOpposite() == Arm.LEFT && currentConfig.getSide() == ArmorHudConfig.Side.LEFT)
+                                                    || (playerEntity.getMainArm().getOpposite() == Arm.RIGHT && currentConfig.getSide() == ArmorHudConfig.Side.RIGHT)
+                                    ) && !playerEntity.getOffHandStack().isEmpty()
+                            ) || (
+                                    (
+                                            (playerEntity.getMainArm() == Arm.LEFT && currentConfig.getSide() == ArmorHudConfig.Side.LEFT)
+                                                    || (playerEntity.getMainArm() == Arm.RIGHT && currentConfig.getSide() == ArmorHudConfig.Side.RIGHT)
+                                    ) && this.client.options.attackIndicator == AttackIndicator.HOTBAR // todo make independent
+                            )
+                    )
                         offhandSlotOffset = defaultOffhandSlotOffset;
                     else
                         offhandSlotOffset = 0;
@@ -150,6 +168,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
             int iReversed = currentConfig.isReversed() ? (armorItems.size() - i - 1) : i;
             if (!armorItems.get(i).isEmpty())
                 this.renderHotbarItem(this.armorWidgetX + (step * iReversed) + 3, this.armorWidgetY + 3, tickDelta, playerEntity, armorItems.get(i));
+            //todo add empty icon rendering (shift+f11)
         }
     }
+
+    //todo add warning rendering
 }
