@@ -46,16 +46,11 @@ public abstract class InGameHudMixin extends DrawableHelper {
         int defaultOffhandSlotOffset = 29;
 
         int amount = 0;
-        if (getCurrentConfig().isFullWidgetShown())
-            amount = 4;
-        else
-            for (ItemStack itemStack : playerEntity.getArmorItems())
-                if (!itemStack.isEmpty())
-                    amount++;
+        for (ItemStack itemStack : playerEntity.getArmorItems())
+            if (!itemStack.isEmpty())
+                amount++;
 
-        if (amount > 0) {
-            int widgetWidth = width + ((amount - 1) * step);
-
+        if (amount > 0 || getCurrentConfig().getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS) {
             int sideMultiplier;
             int sideOffsetMultiplier;
             if ((getCurrentConfig().getAnchor() == ArmorHudConfig.Anchor.HOTBAR && getCurrentConfig().getSide() == ArmorHudConfig.Side.LEFT) || (getCurrentConfig().getAnchor() != ArmorHudConfig.Anchor.HOTBAR && getCurrentConfig().getSide() == ArmorHudConfig.Side.RIGHT)) {
@@ -67,10 +62,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
             }
 
             int verticalMultiplier;
-            if (getCurrentConfig().getAnchor().isTop())
-                verticalMultiplier = 1;
-            else
-                verticalMultiplier = -1;
+            switch (getCurrentConfig().getAnchor()) {
+                case TOP:
+                case TOP_CENTER:
+                    verticalMultiplier = 1;
+                    break;
+                case HOTBAR:
+                case BOTTOM:
+                    verticalMultiplier = -1;
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getCurrentConfig().getAnchor());
+            }
 
             int offhandSlotOffset;
             switch (getCurrentConfig().getOffhandSlotBehavior()) {
@@ -103,6 +106,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     throw new IllegalStateException("Unexpected value: " + getCurrentConfig().getAnchor());
             }
 
+            int slots = getCurrentConfig().getWidgetShown() == ArmorHudConfig.WidgetShown.NOT_EMPTY ? amount : 4;
+            int widgetWidth = width + ((slots - 1) * step);
+
             switch (getCurrentConfig().getAnchor()) {
                 case TOP_CENTER:
                     this.armorWidgetX = center - (widgetWidth / 2);
@@ -132,7 +138,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         PlayerEntity playerEntity = this.getCameraPlayer();
         ArrayList<ItemStack> armorItems = new ArrayList<>(4);
         for (ItemStack itemStack : playerEntity.getArmorItems())
-            if (!itemStack.isEmpty() || getCurrentConfig().isFullWidgetShown())
+            if (!itemStack.isEmpty() || getCurrentConfig().getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)
                 armorItems.add(itemStack);
 
         int step = 20;

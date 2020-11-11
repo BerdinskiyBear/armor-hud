@@ -17,7 +17,7 @@ public class ArmorHudConfig {
     private Side side;
     private int offsetX;
     private int offsetY;
-    private boolean fullWidgetShown;
+    private WidgetShown widgetShown;
     private OffhandSlotBehavior offhandSlotBehavior;
     private boolean reversed;
 
@@ -26,7 +26,7 @@ public class ArmorHudConfig {
         this.side = Side.LEFT;
         this.offsetX = 0;
         this.offsetY = 0;
-        this.fullWidgetShown = false;
+        this.widgetShown = WidgetShown.NOT_EMPTY;
         this.offhandSlotBehavior = OffhandSlotBehavior.ADHERE;
         this.reversed = true;
     }
@@ -97,12 +97,12 @@ public class ArmorHudConfig {
         this.offsetY = offsetY;
     }
 
-    public boolean isFullWidgetShown() {
-        return fullWidgetShown;
+    public WidgetShown getWidgetShown() {
+        return widgetShown;
     }
 
-    public void setFullWidgetShown(boolean fullWidgetShown) {
-        this.fullWidgetShown = fullWidgetShown;
+    public void setWidgetShown(WidgetShown widgetShown) {
+        this.widgetShown = widgetShown;
     }
 
     public OffhandSlotBehavior getOffhandSlotBehavior() {
@@ -125,11 +125,7 @@ public class ArmorHudConfig {
         TOP_CENTER,
         TOP,
         BOTTOM,
-        HOTBAR;
-
-        public boolean isTop() {
-            return this == TOP || this == TOP_CENTER;
-        }
+        HOTBAR
     }
 
     public enum Side {
@@ -141,5 +137,11 @@ public class ArmorHudConfig {
         ALWAYS_IGNORE,
         ADHERE,
         ALWAYS_LEAVE_SPACE
+    }
+
+    public enum WidgetShown {
+        ALWAYS,
+        IF_ANY_PRESENT,
+        NOT_EMPTY
     }
 }
