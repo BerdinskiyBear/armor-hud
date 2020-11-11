@@ -42,7 +42,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         int width = 22;
         int height = 22;
         int center = this.scaledWidth / 2;
-        int defaultHotbarOffset = 96;
+        int defaultHotbarOffset = 97;
         int defaultOffhandSlotOffset = 29;
 
         int amount = 0;

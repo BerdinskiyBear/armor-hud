@@ -11,7 +11,7 @@ public class ArmorHudMod implements ModInitializer {
 
     public static final String MOD_ID = "armor_hud";
     public static final String MOD_NAME = "BerdinskiyBear's ArmorHUD";
-    public static Logger LOGGER = LogManager.getLogger(MOD_NAME);
+    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
     private static ArmorHudConfig currentConfig;
 
