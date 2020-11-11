@@ -31,6 +31,16 @@ public class ArmorHudConfig {
         this.reversed = true;
     }
 
+    public ArmorHudConfig(ArmorHudConfig original) {
+        this.anchor = original.anchor;
+        this.side = original.side;
+        this.offsetX = original.offsetX;
+        this.offsetY = original.offsetY;
+        this.widgetShown = original.widgetShown;
+        this.offhandSlotBehavior = original.offhandSlotBehavior;
+        this.reversed = original.reversed;
+    }
+
     public static ArmorHudConfig readConfigFile() {
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().serializeSpecialFloatingPointValues().create();
         File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), ArmorHudMod.MOD_ID + ".json");

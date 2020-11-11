@@ -16,11 +16,14 @@ import ru.berdinskiybear.armorhud.config.ArmorHudConfig.Side;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig.WidgetShown;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static ru.berdinskiybear.armorhud.ArmorHudMod.getCurrentConfig;
 
 public class ArmorHudConfigScreenBuilder {
     private ArmorHudConfig temporaryConfig;
+    public static ArmorHudConfig previewConfig = new ArmorHudConfig();
+    public static final Text title = Text.of("BerdinskiyBear's Armor HUD mod config");
 
     public ArmorHudConfigScreenBuilder() {
         this.temporaryConfig = new ArmorHudConfig();
@@ -50,8 +53,11 @@ public class ArmorHudConfigScreenBuilder {
                 .setShouldListSmoothScroll(false)
                 .setShouldTabsSmoothScroll(false)
                 .transparentBackground()
-                .setTitle(Text.of("BerdinskiyBear's Armor HUD mod config"))
-                //.setAfterInitConsumer((screen) -> temporaryConfig = new ArmorHudConfig())
+                .setTitle(title)
+                .setAfterInitConsumer((screen) -> {
+                    previewConfig = new ArmorHudConfig(getCurrentConfig());
+                    temporaryConfig = new ArmorHudConfig(getCurrentConfig());
+                })
                 .setSavingRunnable(() -> {
                     ArmorHudMod.setCurrentConfig(this.temporaryConfig);
                     ArmorHudConfig.writeConfigFile(this.temporaryConfig);
@@ -69,6 +75,10 @@ public class ArmorHudConfigScreenBuilder {
                 .setDefaultValue(defaultConfig.getAnchor())
                 .setSaveConsumer(this.temporaryConfig::setAnchor)
                 .setSuggestionMode(false)
+                .setErrorSupplier((Anchor value) -> {
+                    previewConfig.setAnchor(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(anchorDropdownBoxEntry);
 
@@ -81,6 +91,10 @@ public class ArmorHudConfigScreenBuilder {
                 .setDefaultValue(defaultConfig.getSide())
                 .setSaveConsumer(this.temporaryConfig::setSide)
                 .setSuggestionMode(false)
+                .setErrorSupplier((Side value) -> {
+                    previewConfig.setSide(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(sideDropdownBoxEntry);
 
@@ -93,6 +107,10 @@ public class ArmorHudConfigScreenBuilder {
                 .setDefaultValue(defaultConfig.getOffhandSlotBehavior())
                 .setSaveConsumer(this.temporaryConfig::setOffhandSlotBehavior)
                 .setSuggestionMode(false)
+                .setErrorSupplier((OffhandSlotBehavior value) -> {
+                    previewConfig.setOffhandSlotBehavior(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(offhandSlotBehaviorDropdownBoxEntry);
 
@@ -100,6 +118,10 @@ public class ArmorHudConfigScreenBuilder {
                 .startIntField(Text.of("X offset"), getCurrentConfig().getOffsetX())
                 .setDefaultValue(defaultConfig.getOffsetX())
                 .setSaveConsumer(this.temporaryConfig::setOffsetX)
+                .setErrorSupplier((Integer value) -> {
+                    previewConfig.setOffsetX(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(offsetXEntry);
 
@@ -107,6 +129,10 @@ public class ArmorHudConfigScreenBuilder {
                 .startIntField(Text.of("Y offset"), getCurrentConfig().getOffsetY())
                 .setDefaultValue(defaultConfig.getOffsetY())
                 .setSaveConsumer(this.temporaryConfig::setOffsetY)
+                .setErrorSupplier((Integer value) -> {
+                    previewConfig.setOffsetY(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(offsetYEntry);
 
@@ -119,6 +145,10 @@ public class ArmorHudConfigScreenBuilder {
                 .setDefaultValue(defaultConfig.getWidgetShown())
                 .setSaveConsumer(this.temporaryConfig::setWidgetShown)
                 .setSuggestionMode(false)
+                .setErrorSupplier((WidgetShown value) -> {
+                    previewConfig.setWidgetShown(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(widgetShownDropdownBoxEntry);
 
@@ -126,6 +156,10 @@ public class ArmorHudConfigScreenBuilder {
                 .startBooleanToggle(Text.of("Reversed order"), getCurrentConfig().isReversed())
                 .setDefaultValue(defaultConfig.isReversed())
                 .setSaveConsumer(this.temporaryConfig::setReversed)
+                .setErrorSupplier((Boolean value) -> {
+                    previewConfig.setReversed(value);
+                    return Optional.empty();
+                })
                 .build();
         category.addEntry(reversedBooleanListEntry);
 
