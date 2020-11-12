@@ -47,6 +47,17 @@ public class ArmorHudConfigScreenBuilder {
         ConfigCategory category = configBuilder.getOrCreateCategory(Text.of("Category"));
         ConfigEntryBuilder configEntryBuilder = configBuilder.entryBuilder();
 
+        BooleanListEntry enabledBooleanListEntry = configEntryBuilder
+                .startBooleanToggle(Text.of("Enable"), getCurrentConfig().isEnabled())
+                .setDefaultValue(defaultConfig.isEnabled())
+                .setSaveConsumer((Boolean reversed) -> temporaryConfig.setReversed(reversed))
+                .setErrorSupplier((Boolean value) -> {
+                    previewConfig.setEnabled(value);
+                    return Optional.empty();
+                })
+                .build();
+        category.addEntry(enabledBooleanListEntry);
+
         DropdownBoxEntry<Anchor> anchorDropdownBoxEntry = configEntryBuilder
                 .startDropdownMenu(Text.of("Anchor"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(getCurrentConfig().getAnchor(), Anchor::valueOf, ArmorHudConfigScreenBuilder::anchorToText),
@@ -143,6 +154,17 @@ public class ArmorHudConfigScreenBuilder {
                 })
                 .build();
         category.addEntry(reversedBooleanListEntry);
+
+        BooleanListEntry iconsBooleanListEntry = configEntryBuilder
+                .startBooleanToggle(Text.of("Empty slot icons"), getCurrentConfig().getIconsShown())
+                .setDefaultValue(defaultConfig.getIconsShown())
+                .setSaveConsumer((Boolean reversed) -> temporaryConfig.setIconsShown(reversed))
+                .setErrorSupplier((Boolean value) -> {
+                    previewConfig.setIconsShown(value);
+                    return Optional.empty();
+                })
+                .build();
+        category.addEntry(iconsBooleanListEntry);
 
         return configBuilder.build();
     }

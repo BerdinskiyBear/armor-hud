@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class ArmorHudConfig {
 
+    private boolean enabled;
     private Anchor anchor;
     private Side side;
     private int offsetX;
@@ -20,8 +21,10 @@ public class ArmorHudConfig {
     private WidgetShown widgetShown;
     private OffhandSlotBehavior offhandSlotBehavior;
     private boolean reversed;
+    private boolean iconsShown;
 
     public ArmorHudConfig() {
+        this.enabled = true;
         this.anchor = Anchor.HOTBAR;
         this.side = Side.LEFT;
         this.offsetX = 0;
@@ -29,9 +32,11 @@ public class ArmorHudConfig {
         this.widgetShown = WidgetShown.NOT_EMPTY;
         this.offhandSlotBehavior = OffhandSlotBehavior.ADHERE;
         this.reversed = true;
+        this.iconsShown = true;
     }
 
     public ArmorHudConfig(ArmorHudConfig original) {
+        this.enabled = original.enabled;
         this.anchor = original.anchor;
         this.side = original.side;
         this.offsetX = original.offsetX;
@@ -39,6 +44,7 @@ public class ArmorHudConfig {
         this.widgetShown = original.widgetShown;
         this.offhandSlotBehavior = original.offhandSlotBehavior;
         this.reversed = original.reversed;
+        this.iconsShown = original.iconsShown;
     }
 
     public static ArmorHudConfig readConfigFile() {
@@ -73,6 +79,14 @@ public class ArmorHudConfig {
         ArmorHudConfig config = new ArmorHudConfig();
         writeConfigFile(config);
         return config;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Anchor getAnchor() {
@@ -129,6 +143,14 @@ public class ArmorHudConfig {
 
     public void setReversed(boolean reversed) {
         this.reversed = reversed;
+    }
+
+    public boolean getIconsShown() {
+        return iconsShown;
+    }
+
+    public void setIconsShown(boolean iconsShown) {
+        this.iconsShown = iconsShown;
     }
 
     public enum Anchor {
