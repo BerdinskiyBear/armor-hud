@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,12 +32,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private static final Identifier EMPTY_CHESTPLATE_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_chestplate");
     private static final Identifier EMPTY_LEGGINGS_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_leggings");
     private static final Identifier EMPTY_BOOTS_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_boots");
-
     private static final Identifier BLOCK_ATLAS_TEXTURE = new Identifier("textures/atlas/blocks.png");
 
     private int armorWidgetX;
     private int armorWidgetY;
     private ArmorHudConfig currentArmorHudConfig;
+    private long lastMeasuredMsTime;
+    private long ring;
 
     @Shadow
     protected abstract PlayerEntity getCameraPlayer();
@@ -58,6 +60,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
     public void renderArmorWidget(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
         currentArmorHudConfig = this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
         if (currentArmorHudConfig.isEnabled()) {
+
+            long cycle = 3021;
+            long measuredTime = Util.getMeasuringTimeMs();
+            if (!this.client.isPaused()) ring += measuredTime - lastMeasuredMsTime;
+            lastMeasuredMsTime = measuredTime;
+            ring %= cycle;
+            float cycleProgress = ((float) ring) / ((float) cycle);
+
             PlayerEntity playerEntity = this.getCameraPlayer();
             int step = 20;
             int width = 22;
@@ -72,6 +82,11 @@ public abstract class InGameHudMixin extends DrawableHelper {
                 if (!itemStack.isEmpty())
                     amount++;
 
+            ArrayList<ItemStack> armorItems = new ArrayList<>(4);
+            for (ItemStack itemStack : playerEntity.getArmorItems())
+                if (!itemStack.isEmpty() || currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)
+                    armorItems.add(itemStack);
+
             if (amount > 0 || currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS) {
                 int sideMultiplier;
                 int sideOffsetMultiplier;
@@ -84,14 +99,17 @@ public abstract class InGameHudMixin extends DrawableHelper {
                 }
 
                 int verticalMultiplier;
+                int verticalOffsetMultiplier;
                 switch (currentArmorHudConfig.getAnchor()) {
                     case TOP:
                     case TOP_CENTER:
                         verticalMultiplier = 1;
+                        verticalOffsetMultiplier = 0;
                         break;
                     case HOTBAR:
                     case BOTTOM:
                         verticalMultiplier = -1;
+                        verticalOffsetMultiplier = -1;
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
@@ -164,6 +182,26 @@ public abstract class InGameHudMixin extends DrawableHelper {
                 int endPieceLength = 3;
                 this.drawTexture(matrices, this.armorWidgetX, this.armorWidgetY, 0, 0, widgetWidth - endPieceLength, height);
                 this.drawTexture(matrices, this.armorWidgetX + widgetWidth - endPieceLength, this.armorWidgetY, 179, 0, endPieceLength, height);
+
+                int minHeight = 2;
+                int maxHeight = 7;
+
+                for (int i = 0; i < armorItems.size(); i++) {
+                    int iReversed = currentArmorHudConfig.isReversed() ? (armorItems.size() - i - 1) : i;
+                    if (!armorItems.get(i).isEmpty() && armorItems.get(i).isDamageable())
+                        if (1 - (double) armorItems.get(i).getDamage() / (double) armorItems.get(i).getMaxDamage() <= 0.5) {
+                            this.drawTexture(matrices,
+                                    this.armorWidgetX + (step * iReversed) + 7,
+                                    this.armorWidgetY
+                                            + (height * (verticalOffsetMultiplier + 1))
+                                            + (8 * verticalOffsetMultiplier)
+                                            + ((minHeight + Math.round(Math.abs(cycleProgress * 2.0F - 1.0F) * maxHeight)) * verticalMultiplier),
+                                    238,
+                                    22,
+                                    8,
+                                    8);
+                        }
+                }
             }
         }
     }
@@ -220,6 +258,4 @@ public abstract class InGameHudMixin extends DrawableHelper {
                 }
         }
     }
-
-    //todo add warning rendering
 }
