@@ -22,6 +22,9 @@ public class ArmorHudConfig {
     private OffhandSlotBehavior offhandSlotBehavior;
     private boolean reversed;
     private boolean iconsShown;
+    private boolean warningShown;
+    private int minDurabilityValue;
+    private double minDurabilityPercentage;
 
     public ArmorHudConfig() {
         this.enabled = true;
@@ -33,6 +36,9 @@ public class ArmorHudConfig {
         this.offhandSlotBehavior = OffhandSlotBehavior.ADHERE;
         this.reversed = true;
         this.iconsShown = true;
+        this.warningShown = true;
+        this.minDurabilityValue = 5;
+        this.minDurabilityPercentage = 0.05D;
     }
 
     public ArmorHudConfig(ArmorHudConfig original) {
@@ -45,6 +51,9 @@ public class ArmorHudConfig {
         this.offhandSlotBehavior = original.offhandSlotBehavior;
         this.reversed = original.reversed;
         this.iconsShown = original.iconsShown;
+        this.warningShown = original.warningShown;
+        this.minDurabilityValue = original.minDurabilityValue;
+        this.minDurabilityPercentage = original.minDurabilityPercentage;
     }
 
     public static ArmorHudConfig readConfigFile() {
@@ -151,6 +160,30 @@ public class ArmorHudConfig {
 
     public void setIconsShown(boolean iconsShown) {
         this.iconsShown = iconsShown;
+    }
+
+    public boolean isWarningShown() {
+        return warningShown;
+    }
+
+    public void setWarningShown(boolean warningShown) {
+        this.warningShown = warningShown;
+    }
+
+    public int getMinDurabilityValue() {
+        return minDurabilityValue;
+    }
+
+    public void setMinDurabilityValue(int minDurabilityValue) {
+        this.minDurabilityValue = minDurabilityValue;
+    }
+
+    public double getMinDurabilityPercentage() {
+        return minDurabilityPercentage;
+    }
+
+    public void setMinDurabilityPercentage(double minDurabilityPercentage) {
+        this.minDurabilityPercentage = minDurabilityPercentage;
     }
 
     public enum Anchor {

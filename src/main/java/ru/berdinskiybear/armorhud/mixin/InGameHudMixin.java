@@ -61,12 +61,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
         currentArmorHudConfig = this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
         if (currentArmorHudConfig.isEnabled()) {
 
-            long cycle = 3021;
-            long measuredTime = Util.getMeasuringTimeMs();
-            if (!this.client.isPaused()) ring += measuredTime - lastMeasuredMsTime;
-            lastMeasuredMsTime = measuredTime;
-            ring %= cycle;
-            float cycleProgress = ((float) ring) / ((float) cycle);
+            float cycleProgress;
+            if (currentArmorHudConfig.isWarningShown()) {
+                long cycle = 2000;
+                long measuredTime = Util.getMeasuringTimeMs();
+                if (!this.client.isPaused()) ring += measuredTime - lastMeasuredMsTime;
+                lastMeasuredMsTime = measuredTime;
+                ring %= cycle;
+                cycleProgress = ((float) ring) / ((float) cycle);
+            } else {
+                lastMeasuredMsTime = Util.getMeasuringTimeMs();
+                cycleProgress = 0.0F;
+            }
 
             PlayerEntity playerEntity = this.getCameraPlayer();
             int step = 20;
@@ -183,24 +189,29 @@ public abstract class InGameHudMixin extends DrawableHelper {
                 this.drawTexture(matrices, this.armorWidgetX, this.armorWidgetY, 0, 0, widgetWidth - endPieceLength, height);
                 this.drawTexture(matrices, this.armorWidgetX + widgetWidth - endPieceLength, this.armorWidgetY, 179, 0, endPieceLength, height);
 
-                int minHeight = 2;
-                int maxHeight = 7;
+                if (currentArmorHudConfig.isWarningShown()) {
+                    int minHeight = 2;
+                    int maxHeight = 7;
 
-                for (int i = 0; i < armorItems.size(); i++) {
-                    int iReversed = currentArmorHudConfig.isReversed() ? (armorItems.size() - i - 1) : i;
-                    if (!armorItems.get(i).isEmpty() && armorItems.get(i).isDamageable())
-                        if (1 - (double) armorItems.get(i).getDamage() / (double) armorItems.get(i).getMaxDamage() <= 0.5) {
-                            this.drawTexture(matrices,
-                                    this.armorWidgetX + (step * iReversed) + 7,
-                                    this.armorWidgetY
-                                            + (height * (verticalOffsetMultiplier + 1))
-                                            + (8 * verticalOffsetMultiplier)
-                                            + ((minHeight + Math.round(Math.abs(cycleProgress * 2.0F - 1.0F) * maxHeight)) * verticalMultiplier),
-                                    238,
-                                    22,
-                                    8,
-                                    8);
+                    for (int i = 0; i < armorItems.size(); i++) {
+                        int iReversed = currentArmorHudConfig.isReversed() ? (armorItems.size() - i - 1) : i;
+                        if (!armorItems.get(i).isEmpty() && armorItems.get(i).isDamageable()) {
+                            int damage = armorItems.get(i).getDamage();
+                            int maxDamage = armorItems.get(i).getMaxDamage();
+                            if ((1.0F - ((float) damage) / ((float) maxDamage) <= currentArmorHudConfig.getMinDurabilityPercentage()) || (maxDamage - damage <= currentArmorHudConfig.getMinDurabilityValue())) {
+                                this.drawTexture(matrices,
+                                        this.armorWidgetX + (step * iReversed) + 7,
+                                        this.armorWidgetY
+                                                + (height * (verticalOffsetMultiplier + 1))
+                                                + (8 * verticalOffsetMultiplier)
+                                                + ((minHeight + Math.round(Math.abs(cycleProgress * 2.0F - 1.0F) * maxHeight)) * verticalMultiplier),
+                                        238,
+                                        22,
+                                        8,
+                                        8);
+                            }
                         }
+                    }
                 }
             }
         }
