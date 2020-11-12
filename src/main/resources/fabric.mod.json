@@ -26,7 +26,10 @@
     "armor_hud.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.10.6",
-    "fabric": "*"
+    "fabricloader": ">=0.10"
+  },
+  "recommends": {
+    "cloth-config2": ">=4",
+    "modmenu": ">=1.14"
   }
 }
