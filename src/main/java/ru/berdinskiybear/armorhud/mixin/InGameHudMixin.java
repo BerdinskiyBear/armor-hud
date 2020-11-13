@@ -58,7 +58,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setZOffset(I)V", ordinal = 1))
     public void renderArmorWidget(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
-        currentArmorHudConfig = this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudConfigScreenBuilder.title ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
+        currentArmorHudConfig = this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
         if (currentArmorHudConfig.isEnabled()) {
 
             float cycleProgress;

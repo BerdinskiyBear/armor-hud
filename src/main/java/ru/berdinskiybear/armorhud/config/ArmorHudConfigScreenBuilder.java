@@ -22,7 +22,6 @@ import java.util.Optional;
 import static ru.berdinskiybear.armorhud.ArmorHudMod.getCurrentConfig;
 
 public class ArmorHudConfigScreenBuilder {
-    public static final Text title = Text.of("BerdinskiyBear's Armor HUD mod config");
 
     private static ArmorHudConfig temporaryConfig;
     public static ArmorHudConfig previewConfig = new ArmorHudConfig();
@@ -35,7 +34,7 @@ public class ArmorHudConfigScreenBuilder {
                 .setShouldListSmoothScroll(false)
                 .setShouldTabsSmoothScroll(false)
                 .transparentBackground()
-                .setTitle(title)
+                .setTitle(ArmorHudMod.CONFIG_SCREEN_NAME)
                 .setAfterInitConsumer((screen) -> {
                     temporaryConfig = new ArmorHudConfig(getCurrentConfig());
                     previewConfig = new ArmorHudConfig(getCurrentConfig());

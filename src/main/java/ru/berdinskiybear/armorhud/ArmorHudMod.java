@@ -2,6 +2,7 @@ package ru.berdinskiybear.armorhud;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.text.Text;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,7 @@ public class ArmorHudMod implements ClientModInitializer {
     public static final String MOD_ID = "armor_hud";
     public static final String MOD_NAME = "BerdinskiyBear's ArmorHUD";
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+    public static final Text CONFIG_SCREEN_NAME = Text.of("BerdinskiyBear's Armor HUD mod config");
 
     private static ArmorHudConfig currentConfig;
 
