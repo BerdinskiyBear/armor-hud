@@ -13,10 +13,10 @@
   "icon": "assets/armor_hud/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
+    "main": [],
+    "client": [
       "ru.berdinskiybear.armorhud.ArmorHudMod"
     ],
-    "client": [],
     "server": [],
     "modmenu": [
       "ru.berdinskiybear.armorhud.config.ArmorHudModmenuIntegration"
@@ -29,6 +29,7 @@
     "fabricloader": ">=0.10"
   },
   "recommends": {
+    "fabric-resource-loader-v0": "*",
     "cloth-config2": ">=4",
     "modmenu": ">=1.14"
   }
