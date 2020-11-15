@@ -92,7 +92,7 @@ public class ArmorHudConfigScreenBuilder {
                 })
                 .build();
         category.addEntry(sideDropdownBoxEntry);
-        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.side.description")).build());
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.side.description", (Object[]) Side.values())).build());
 
         DropdownBoxEntry<OffhandSlotBehavior> offhandSlotBehaviorDropdownBoxEntry = configEntryBuilder
                 .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.offhandSlot.name"),
@@ -109,7 +109,7 @@ public class ArmorHudConfigScreenBuilder {
                 })
                 .build();
         category.addEntry(offhandSlotBehaviorDropdownBoxEntry);
-        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offhandSlot.description")).build());
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offhandSlot.description", (Object[]) OffhandSlotBehavior.values())).build());
 
         IntegerListEntry offsetXEntry = configEntryBuilder
                 .startIntField(new TranslatableText("armorHud.configScreen.setting.offsetX.name"), getCurrentConfig().getOffsetX())
