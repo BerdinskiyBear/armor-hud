@@ -8,7 +8,10 @@
     "BerdinskiyBear"
   ],
   "contributors": [],
-  "contact": {},
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/berdinskiybears-armor-hud",
+    "issues": "https://github.com/BerdinskiyBear/armor-hud/issues"
+  },
   "license": "MIT",
   "icon": "assets/armor_hud/icon.png",
   "environment": "client",
