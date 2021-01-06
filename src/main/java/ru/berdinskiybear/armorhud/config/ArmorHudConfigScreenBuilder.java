@@ -38,7 +38,12 @@ public class ArmorHudConfigScreenBuilder {
                 .setTitle(ArmorHudMod.CONFIG_SCREEN_NAME)
                 .setAfterInitConsumer((screen) -> {
                     temporaryConfig = new ArmorHudConfig(getCurrentConfig());
-                    previewConfig = new ArmorHudConfig(getCurrentConfig());
+                    previewConfig = new ArmorHudConfig(getCurrentConfig()) {
+                        @Override
+                        public boolean isPreview() {
+                            return true;
+                        }
+                    };
                 })
                 .setSavingRunnable(() -> {
                     ArmorHudMod.setCurrentConfig(temporaryConfig);

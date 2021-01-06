@@ -307,7 +307,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         }
 
         // if the game is paused then we really do not need warning icons to bob
-        if (!this.client.isPaused()) {
+        if (!this.client.isPaused() || currentArmorHudConfig.isPreview()) {
             armorHud_cycleProgress[index] += (armorHud_measuredTime - armorHud_lastMeasuredTime) / InGameHudMixin.armorHud_warningIconBobbingCycleLengthMs;
             armorHud_cycleProgress[index] %= 1.0F;
         }

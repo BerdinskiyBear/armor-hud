@@ -90,6 +90,10 @@ public class ArmorHudConfig {
         return config;
     }
 
+    public boolean isPreview() {
+        return false;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
