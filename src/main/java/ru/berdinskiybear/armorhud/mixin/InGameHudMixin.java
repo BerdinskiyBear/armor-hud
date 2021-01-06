@@ -24,249 +24,313 @@ import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfigScreenBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
-
-    private static final Identifier EMPTY_HELMET_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_helmet");
-    private static final Identifier EMPTY_CHESTPLATE_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_chestplate");
-    private static final Identifier EMPTY_LEGGINGS_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_leggings");
-    private static final Identifier EMPTY_BOOTS_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_boots");
-    private static final Identifier BLOCK_ATLAS_TEXTURE = new Identifier("textures/atlas/blocks.png");
-
-    private int armorWidgetX;
-    private int armorWidgetY;
-    private ArmorHudConfig currentArmorHudConfig;
-    private long lastMeasuredMsTime;
-    private long ring;
-
     @Shadow
-    protected abstract PlayerEntity getCameraPlayer();
+    @Final
+    private MinecraftClient client;
+    @Shadow
+    @Final
+    private Random random;
 
     @Shadow
     private int scaledWidth;
-
     @Shadow
     private int scaledHeight;
+
+    private static final Identifier armorHud_WIDGETS_TEXTURE = new Identifier("textures/gui/widgets.png");
+    private static final Identifier armorHud_EMPTY_HELMET_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_helmet");
+    private static final Identifier armorHud_EMPTY_CHESTPLATE_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_chestplate");
+    private static final Identifier armorHud_EMPTY_LEGGINGS_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_leggings");
+    private static final Identifier armorHud_EMPTY_BOOTS_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_boots");
+    private static final Identifier armorHud_BLOCK_ATLAS_TEXTURE = new Identifier("textures/atlas/blocks.png");
+
+    private static final int armorHud_step = 20;
+    private static final int armorHud_width = 22;
+    private static final int armorHud_height = 22;
+    private static final int armorHud_defaultHotbarOffset = 98;
+    private static final int armorHud_defaultOffhandSlotOffset = 29;
+    private static final int armorHud_defaultHotbarAttackIndicatorOffset = 23;
+    private static final int armorHud_minWarningHeight = 2;
+    private static final int armorHud_maxWarningHeight = 7;
+    private static final int armorHud_warningHorizontalOffset = 7;
+    private static final float armorHud_warningIconBobbingCycleLengthMs = 2000.0F;
+
+    private long armorHud_lastMeasuredTime;
+    private long armorHud_measuredTime;
+    private float[] armorHud_cycleProgress = null;
+    private final List<ItemStack> armorHud_armorItems = new ArrayList<>(4);
+    private final List<Integer> armorHud_armorItemIndexes = new ArrayList<>(4);
 
     @Shadow
     protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack);
 
     @Shadow
-    @Final
-    private MinecraftClient client;
+    protected abstract PlayerEntity getCameraPlayer();
 
-    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;setZOffset(I)V", ordinal = 1))
-    public void renderArmorWidget(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
-        currentArmorHudConfig = this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
+    @SuppressWarnings("deprecation")
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.AFTER))
+    public void armorHud_renderArmorHud(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+        // add this to profiler
+        this.client.getProfiler().push("armorHud");
+
+        // getting current config
+        ArmorHudConfig currentArmorHudConfig = this.armorHud_getCurrentArmorHudConfig();
+
+        // updating measuring time fields
+        this.armorHud_updateMeasuringTime();
+
+        // if current config tells that this mod should be enabled then the action starts
         if (currentArmorHudConfig.isEnabled()) {
-
-            float cycleProgress;
-            if (currentArmorHudConfig.isWarningShown()) {
-                long cycle = 2000;
-                long measuredTime = Util.getMeasuringTimeMs();
-                if (!this.client.isPaused()) ring += measuredTime - lastMeasuredMsTime;
-                lastMeasuredMsTime = measuredTime;
-                ring %= cycle;
-                cycleProgress = ((float) ring) / ((float) cycle);
-            } else {
-                lastMeasuredMsTime = Util.getMeasuringTimeMs();
-                cycleProgress = 0.0F;
-            }
-
             PlayerEntity playerEntity = this.getCameraPlayer();
-            int step = 20;
-            int width = 22;
-            int height = 22;
-            int center = this.scaledWidth / 2;
-            int defaultHotbarOffset = 98;
-            int defaultOffhandSlotOffset = 29;
-            int defaultHotbarAttackIndicatorOffset = 23;
+            if (playerEntity != null) {
+                int amount = 0;
 
-            int amount = 0;
-            for (ItemStack itemStack : playerEntity.getArmorItems())
-                if (!itemStack.isEmpty())
-                    amount++;
-
-            ArrayList<ItemStack> armorItems = new ArrayList<>(4);
-            for (ItemStack itemStack : playerEntity.getArmorItems())
-                if (!itemStack.isEmpty() || currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)
-                    armorItems.add(itemStack);
-
-            if (amount > 0 || currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS) {
-                int sideMultiplier;
-                int sideOffsetMultiplier;
-                if ((currentArmorHudConfig.getAnchor() == ArmorHudConfig.Anchor.HOTBAR && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT) || (currentArmorHudConfig.getAnchor() != ArmorHudConfig.Anchor.HOTBAR && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT)) {
-                    sideMultiplier = -1;
-                    sideOffsetMultiplier = -1;
-                } else {
-                    sideMultiplier = 1;
-                    sideOffsetMultiplier = 0;
+                // here we count the items, save ones that we need to draw and their indexes
+                {
+                    List<ItemStack> armor = playerEntity.inventory.armor;
+                    armorHud_armorItems.clear();
+                    armorHud_armorItemIndexes.clear();
+                    for (int i = 0; i < armor.size(); i++) {
+                        ItemStack itemStack = armor.get(i);
+                        if (!itemStack.isEmpty())
+                            amount++;
+                        if (!itemStack.isEmpty() || currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY) {
+                            armorHud_armorItems.add(itemStack);
+                            armorHud_armorItemIndexes.add(i);
+                        }
+                    }
                 }
 
-                int verticalMultiplier;
-                int verticalOffsetMultiplier;
-                switch (currentArmorHudConfig.getAnchor()) {
-                    case TOP:
-                    case TOP_CENTER:
-                        verticalMultiplier = 1;
-                        verticalOffsetMultiplier = 0;
-                        break;
-                    case HOTBAR:
-                    case BOTTOM:
-                        verticalMultiplier = -1;
-                        verticalOffsetMultiplier = -1;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
-                }
+                // if amount of armor items is not 0 or if we allow to show empty widget then we prepare and draw
+                if (amount > 0 || currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS) {
+                    final int armorWidgetY;
+                    final int armorWidgetX;
+                    final int sideMultiplier;
+                    final int sideOffsetMultiplier;
+                    final int verticalMultiplier;
+                    final int verticalOffsetMultiplier;
+                    final int widgetWidth;
 
-                int addedHotbarOffset;
-                switch (currentArmorHudConfig.getOffhandSlotBehavior()) {
-                    case ALWAYS_IGNORE:
-                        addedHotbarOffset = 0;
-                        break;
-                    case ALWAYS_LEAVE_SPACE:
-                        addedHotbarOffset = Math.max(defaultOffhandSlotOffset, defaultHotbarAttackIndicatorOffset);
-                        break;
-                    case ADHERE:
-                        if (
-                                (
-                                        playerEntity.getMainArm().getOpposite() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
-                                                || playerEntity.getMainArm().getOpposite() == Arm.RIGHT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT
-                                ) && !playerEntity.getOffHandStack().isEmpty()
-                        )
-                            addedHotbarOffset = defaultOffhandSlotOffset;
-                        else if (
-                                (
-                                        playerEntity.getMainArm() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
-                                                || playerEntity.getMainArm() == Arm.RIGHT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT
-                                ) && this.client.options.attackIndicator == AttackIndicator.HOTBAR
-                        )
-                            addedHotbarOffset = defaultHotbarAttackIndicatorOffset;
-                        else
-                            addedHotbarOffset = 0;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
-                }
+                    // here i calculate position of the widget, its width and all sorts of multipliers based of current config
+                    {
+                        if ((currentArmorHudConfig.getAnchor() == ArmorHudConfig.Anchor.HOTBAR && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT) || (currentArmorHudConfig.getAnchor() != ArmorHudConfig.Anchor.HOTBAR && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT)) {
+                            sideMultiplier = -1;
+                            sideOffsetMultiplier = -1;
+                        } else {
+                            sideMultiplier = 1;
+                            sideOffsetMultiplier = 0;
+                        }
 
-                switch (currentArmorHudConfig.getAnchor()) {
-                    case BOTTOM:
-                    case HOTBAR:
-                        this.armorWidgetY = this.scaledHeight - height;
-                        break;
-                    case TOP:
-                    case TOP_CENTER:
-                        this.armorWidgetY = 0;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
-                }
+                        switch (currentArmorHudConfig.getAnchor()) {
+                            case TOP:
+                            case TOP_CENTER:
+                                verticalMultiplier = 1;
+                                verticalOffsetMultiplier = 0;
+                                break;
+                            case HOTBAR:
+                            case BOTTOM:
+                                verticalMultiplier = -1;
+                                verticalOffsetMultiplier = -1;
+                                break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
+                        }
 
-                int slots = currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.NOT_EMPTY ? amount : 4;
-                int widgetWidth = width + ((slots - 1) * step);
+                        int addedHotbarOffset;
+                        switch (currentArmorHudConfig.getOffhandSlotBehavior()) {
+                            case ALWAYS_IGNORE:
+                                addedHotbarOffset = 0;
+                                break;
+                            case ALWAYS_LEAVE_SPACE:
+                                addedHotbarOffset = Math.max(armorHud_defaultOffhandSlotOffset, armorHud_defaultHotbarAttackIndicatorOffset);
+                                break;
+                            case ADHERE:
+                                if (
+                                        (
+                                                playerEntity.getMainArm().getOpposite() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
+                                                        || playerEntity.getMainArm().getOpposite() == Arm.RIGHT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT
+                                        ) && !playerEntity.getOffHandStack().isEmpty()
+                                )
+                                    addedHotbarOffset = armorHud_defaultOffhandSlotOffset;
+                                else if (
+                                        (
+                                                playerEntity.getMainArm() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
+                                                        || playerEntity.getMainArm() == Arm.RIGHT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT
+                                        ) && this.client.options.attackIndicator == AttackIndicator.HOTBAR
+                                )
+                                    addedHotbarOffset = armorHud_defaultHotbarAttackIndicatorOffset;
+                                else
+                                    addedHotbarOffset = 0;
+                                break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
+                        }
 
-                switch (currentArmorHudConfig.getAnchor()) {
-                    case TOP_CENTER:
-                        this.armorWidgetX = center - (widgetWidth / 2);
-                        break;
-                    case TOP:
-                    case BOTTOM:
-                        this.armorWidgetX = (widgetWidth - this.scaledWidth) * sideOffsetMultiplier;
-                        break;
-                    case HOTBAR:
-                        this.armorWidgetX = center + ((defaultHotbarOffset + addedHotbarOffset) * sideMultiplier) + (widgetWidth * sideOffsetMultiplier);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
-                }
+                        int armorWidgetY1;
+                        switch (currentArmorHudConfig.getAnchor()) {
+                            case BOTTOM:
+                            case HOTBAR:
+                                armorWidgetY1 = this.scaledHeight - armorHud_height;
+                                break;
+                            case TOP:
+                            case TOP_CENTER:
+                                armorWidgetY1 = 0;
+                                break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
+                        }
 
-                this.armorWidgetX += currentArmorHudConfig.getOffsetX() * sideMultiplier;
-                this.armorWidgetY += currentArmorHudConfig.getOffsetY() * verticalMultiplier;
+                        int slots = currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.NOT_EMPTY ? amount : 4;
+                        widgetWidth = armorHud_width + ((slots - 1) * armorHud_step);
 
-                int endPieceLength = 3;
-                this.drawTexture(matrices, this.armorWidgetX, this.armorWidgetY, 0, 0, widgetWidth - endPieceLength, height);
-                this.drawTexture(matrices, this.armorWidgetX + widgetWidth - endPieceLength, this.armorWidgetY, 179, 0, endPieceLength, height);
+                        int armorWidgetX1;
+                        switch (currentArmorHudConfig.getAnchor()) {
+                            case TOP_CENTER:
+                                armorWidgetX1 = this.scaledWidth / 2 - (widgetWidth / 2);
+                                break;
+                            case TOP:
+                            case BOTTOM:
+                                armorWidgetX1 = (widgetWidth - this.scaledWidth) * sideOffsetMultiplier;
+                                break;
+                            case HOTBAR:
+                                armorWidgetX1 = this.scaledWidth / 2 + ((armorHud_defaultHotbarOffset + addedHotbarOffset) * sideMultiplier) + (widgetWidth * sideOffsetMultiplier);
+                                break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
+                        }
 
-                if (currentArmorHudConfig.isWarningShown()) {
-                    int minHeight = 2;
-                    int maxHeight = 7;
+                        armorWidgetX1 += currentArmorHudConfig.getOffsetX() * sideMultiplier;
+                        armorWidgetY1 += currentArmorHudConfig.getOffsetY() * verticalMultiplier;
 
-                    for (int i = 0; i < armorItems.size(); i++) {
-                        int iReversed = currentArmorHudConfig.isReversed() ? (armorItems.size() - i - 1) : i;
-                        if (!armorItems.get(i).isEmpty() && armorItems.get(i).isDamageable()) {
-                            int damage = armorItems.get(i).getDamage();
-                            int maxDamage = armorItems.get(i).getMaxDamage();
-                            if ((1.0F - ((float) damage) / ((float) maxDamage) <= currentArmorHudConfig.getMinDurabilityPercentage()) || (maxDamage - damage <= currentArmorHudConfig.getMinDurabilityValue())) {
-                                this.drawTexture(matrices,
-                                        this.armorWidgetX + (step * iReversed) + 7,
-                                        this.armorWidgetY
-                                                + (height * (verticalOffsetMultiplier + 1))
-                                                + (8 * verticalOffsetMultiplier)
-                                                + ((minHeight + Math.round(Math.abs(cycleProgress * 2.0F - 1.0F) * maxHeight)) * verticalMultiplier),
-                                        238,
-                                        22,
-                                        8,
-                                        8);
+                        armorWidgetY = armorWidgetY1;
+                        armorWidgetX = armorWidgetX1;
+                    }
+
+                    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    this.client.getTextureManager().bindTexture(armorHud_WIDGETS_TEXTURE);
+                    RenderSystem.enableBlend();
+                    RenderSystem.defaultBlendFunc();
+
+                    // here i draw the slots
+                    {
+                        int endPieceLength = 3;
+                        this.drawTexture(matrices, armorWidgetX, armorWidgetY, 0, 0, widgetWidth - endPieceLength, armorHud_height);
+                        this.drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 179, 0, endPieceLength, armorHud_height);
+                    }
+
+                    // here i draw warning icons if necessary
+                    if (currentArmorHudConfig.isWarningShown()) {
+                        for (int i = 0; i < armorHud_armorItems.size(); i++) {
+                            int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
+                            if (!armorHud_armorItems.get(i).isEmpty() && armorHud_armorItems.get(i).isDamageable()) {
+                                int damage = armorHud_armorItems.get(i).getDamage();
+                                int maxDamage = armorHud_armorItems.get(i).getMaxDamage();
+                                if ((1.0F - ((float) damage) / ((float) maxDamage) <= currentArmorHudConfig.getMinDurabilityPercentage()) || (maxDamage - damage <= currentArmorHudConfig.getMinDurabilityValue())) {
+                                    this.drawTexture(matrices,
+                                            armorWidgetX + (armorHud_step * iReversed) + armorHud_warningHorizontalOffset,
+                                            armorWidgetY
+                                                    + (armorHud_height * (verticalOffsetMultiplier + 1))
+                                                    + (8 * verticalOffsetMultiplier)
+                                                    + ((armorHud_minWarningHeight + Math.round(Math.abs(this.armorHud_getCycleProgress(armorHud_armorItemIndexes.get(i), currentArmorHudConfig) * 2.0F - 1.0F) * armorHud_maxWarningHeight)) * verticalMultiplier),
+                                            238,
+                                            22,
+                                            8,
+                                            8);
+                                }
                             }
+                        }
+                    }
+
+                    // here i blend in slot icons if so tells the current config
+                    if (currentArmorHudConfig.getIconsShown()) {
+                        if (currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY && (amount > 0 || currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS)) {
+                            RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
+                            for (int i = 0; i < armorHud_armorItems.size(); i++) {
+                                if (armorHud_armorItems.get(i).isEmpty()) {
+                                    Identifier spriteId;
+                                    switch (i) {
+                                        case 0:
+                                            spriteId = armorHud_EMPTY_BOOTS_SLOT_TEXTURE;
+                                            break;
+                                        case 1:
+                                            spriteId = armorHud_EMPTY_LEGGINGS_SLOT_TEXTURE;
+                                            break;
+                                        case 2:
+                                            spriteId = armorHud_EMPTY_CHESTPLATE_SLOT_TEXTURE;
+                                            break;
+                                        case 3:
+                                        default:
+                                            spriteId = armorHud_EMPTY_HELMET_SLOT_TEXTURE;
+                                            break;
+                                    }
+                                    Sprite sprite = this.client.getSpriteAtlas(armorHud_BLOCK_ATLAS_TEXTURE).apply(spriteId);
+                                    this.client.getTextureManager().bindTexture(sprite.getAtlas().getId());
+
+                                    int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
+                                    drawSprite(matrices, armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, getZOffset() + 1, 16, 16, sprite);
+                                }
+                            }
+                        }
+                    }
+
+                    RenderSystem.enableRescaleNormal();
+                    RenderSystem.defaultBlendFunc();
+
+                    // and at last i draw the armour items
+                    for (int i = 0; i < armorHud_armorItems.size(); i++) {
+                        int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
+                        if (!armorHud_armorItems.get(i).isEmpty()) {
+                            this.renderHotbarItem(armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, tickDelta, playerEntity, armorHud_armorItems.get(i));
                         }
                     }
                 }
             }
         }
+
+        // pop this out of profiler
+        this.client.getProfiler().pop();
     }
 
-    @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;defaultBlendFunc()V", ordinal = 0, shift = At.Shift.AFTER))
-    public void renderArmorItems(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
-        if (currentArmorHudConfig.isEnabled()) {
-            PlayerEntity playerEntity = this.getCameraPlayer();
-            ArrayList<ItemStack> armorItems = new ArrayList<>(4);
-            for (ItemStack itemStack : playerEntity.getArmorItems())
-                if (!itemStack.isEmpty() || currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)
-                    armorItems.add(itemStack);
-
-            int step = 20;
-            int amount = 0;
-            for (int i = 0; i < armorItems.size(); i++) {
-                int iReversed = currentArmorHudConfig.isReversed() ? (armorItems.size() - i - 1) : i;
-                if (!armorItems.get(i).isEmpty()) {
-                    this.renderHotbarItem(this.armorWidgetX + (step * iReversed) + 3, this.armorWidgetY + 3, tickDelta, playerEntity, armorItems.get(i));
-                    amount++;
-                }
-            }
-
-            if (currentArmorHudConfig.getIconsShown())
-                if (currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY && (amount > 0 || currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS)) {
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-                    for (int i = 0; i < armorItems.size(); i++) {
-                        if (armorItems.get(i).isEmpty()) {
-                            Identifier spriteId;
-                            switch (i) {
-                                case 0:
-                                    spriteId = EMPTY_BOOTS_SLOT_TEXTURE;
-                                    break;
-                                case 1:
-                                    spriteId = EMPTY_LEGGINGS_SLOT_TEXTURE;
-                                    break;
-                                case 2:
-                                    spriteId = EMPTY_CHESTPLATE_SLOT_TEXTURE;
-                                    break;
-                                case 3:
-                                default:
-                                    spriteId = EMPTY_HELMET_SLOT_TEXTURE;
-                                    break;
-                            }
-                            Sprite sprite = this.client.getSpriteAtlas(BLOCK_ATLAS_TEXTURE).apply(spriteId);
-                            this.client.getTextureManager().bindTexture(sprite.getAtlas().getId());
-
-                            int iReversed = currentArmorHudConfig.isReversed() ? (armorItems.size() - i - 1) : i;
-                            drawSprite(matrices, this.armorWidgetX + (step * iReversed) + 3, this.armorWidgetY + 3, getZOffset() + 1, 16, 16, sprite);
-                        }
-                    }
-                    RenderSystem.defaultBlendFunc();
-                }
+    /**
+     * @param index                 index
+     * @param currentArmorHudConfig current config
+     * @return cycle progress
+     */
+    private float armorHud_getCycleProgress(int index, ArmorHudConfig currentArmorHudConfig) {
+        // if warning icon bobbing cycle progress array wasn't initialised we do that now
+        if (armorHud_cycleProgress == null) {
+            armorHud_cycleProgress = new float[]{this.random.nextFloat(), this.random.nextFloat(), this.random.nextFloat(), this.random.nextFloat()};
         }
+
+        // if the game is paused then we really do not need warning icons to bob
+        if (!this.client.isPaused()) {
+            armorHud_cycleProgress[index] += (armorHud_measuredTime - armorHud_lastMeasuredTime) / InGameHudMixin.armorHud_warningIconBobbingCycleLengthMs;
+            armorHud_cycleProgress[index] %= 1.0F;
+        }
+
+        return armorHud_cycleProgress[index];
+    }
+
+    /**
+     * This method updates measuring time.
+     */
+    private void armorHud_updateMeasuringTime() {
+        armorHud_lastMeasuredTime = armorHud_measuredTime;
+        armorHud_measuredTime = Util.getMeasuringTimeMs();
+    }
+
+    /**
+     * This function determines which config is supposed to be current.
+     * Usually the loaded config is considered current but if config screen is open
+     * then the preview config is used as current.
+     *
+     * @return Current config
+     */
+    private ArmorHudConfig armorHud_getCurrentArmorHudConfig() {
+        return this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
     }
 }
