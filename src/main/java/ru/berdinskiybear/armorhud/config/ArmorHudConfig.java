@@ -13,18 +13,18 @@ import java.io.IOException;
 
 public class ArmorHudConfig {
 
-    private boolean enabled;
-    private Anchor anchor;
-    private Side side;
-    private int offsetX;
-    private int offsetY;
-    private WidgetShown widgetShown;
-    private OffhandSlotBehavior offhandSlotBehavior;
-    private boolean reversed;
-    private boolean iconsShown;
-    private boolean warningShown;
-    private int minDurabilityValue;
-    private double minDurabilityPercentage;
+    protected boolean enabled;
+    protected Anchor anchor;
+    protected Side side;
+    protected int offsetX;
+    protected int offsetY;
+    protected WidgetShown widgetShown;
+    protected OffhandSlotBehavior offhandSlotBehavior;
+    protected boolean reversed;
+    protected boolean iconsShown;
+    protected boolean warningShown;
+    protected int minDurabilityValue;
+    protected double minDurabilityPercentage;
 
     public ArmorHudConfig() {
         this.enabled = true;
@@ -98,96 +98,48 @@ public class ArmorHudConfig {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public Anchor getAnchor() {
         return anchor;
-    }
-
-    public void setAnchor(Anchor anchor) {
-        this.anchor = anchor;
     }
 
     public Side getSide() {
         return side;
     }
 
-    public void setSide(Side side) {
-        this.side = side;
-    }
-
     public int getOffsetX() {
         return offsetX;
-    }
-
-    public void setOffsetX(int offsetX) {
-        this.offsetX = offsetX;
     }
 
     public int getOffsetY() {
         return offsetY;
     }
 
-    public void setOffsetY(int offsetY) {
-        this.offsetY = offsetY;
-    }
-
     public WidgetShown getWidgetShown() {
         return widgetShown;
-    }
-
-    public void setWidgetShown(WidgetShown widgetShown) {
-        this.widgetShown = widgetShown;
     }
 
     public OffhandSlotBehavior getOffhandSlotBehavior() {
         return offhandSlotBehavior;
     }
 
-    public void setOffhandSlotBehavior(OffhandSlotBehavior offhandSlotBehavior) {
-        this.offhandSlotBehavior = offhandSlotBehavior;
-    }
-
     public boolean isReversed() {
         return reversed;
-    }
-
-    public void setReversed(boolean reversed) {
-        this.reversed = reversed;
     }
 
     public boolean getIconsShown() {
         return iconsShown;
     }
 
-    public void setIconsShown(boolean iconsShown) {
-        this.iconsShown = iconsShown;
-    }
-
     public boolean isWarningShown() {
         return warningShown;
-    }
-
-    public void setWarningShown(boolean warningShown) {
-        this.warningShown = warningShown;
     }
 
     public int getMinDurabilityValue() {
         return minDurabilityValue;
     }
 
-    public void setMinDurabilityValue(int minDurabilityValue) {
-        this.minDurabilityValue = minDurabilityValue;
-    }
-
     public double getMinDurabilityPercentage() {
         return minDurabilityPercentage;
-    }
-
-    public void setMinDurabilityPercentage(double minDurabilityPercentage) {
-        this.minDurabilityPercentage = minDurabilityPercentage;
     }
 
     public enum Anchor {
@@ -212,5 +164,64 @@ public class ArmorHudConfig {
         ALWAYS,
         IF_ANY_PRESENT,
         NOT_EMPTY
+    }
+
+    public static class MutableConfig extends ArmorHudConfig {
+
+        public MutableConfig() {
+            super();
+        }
+
+        public MutableConfig(ArmorHudConfig currentConfig) {
+            super(currentConfig);
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public void setAnchor(Anchor anchor) {
+            this.anchor = anchor;
+        }
+
+        public void setSide(Side side) {
+            this.side = side;
+        }
+
+        public void setOffsetX(int offsetX) {
+            this.offsetX = offsetX;
+        }
+
+        public void setOffsetY(int offsetY) {
+            this.offsetY = offsetY;
+        }
+
+        public void setWidgetShown(WidgetShown widgetShown) {
+            this.widgetShown = widgetShown;
+        }
+
+        public void setOffhandSlotBehavior(OffhandSlotBehavior offhandSlotBehavior) {
+            this.offhandSlotBehavior = offhandSlotBehavior;
+        }
+
+        public void setReversed(boolean reversed) {
+            this.reversed = reversed;
+        }
+
+        public void setIconsShown(boolean iconsShown) {
+            this.iconsShown = iconsShown;
+        }
+
+        public void setWarningShown(boolean warningShown) {
+            this.warningShown = warningShown;
+        }
+
+        public void setMinDurabilityValue(int minDurabilityValue) {
+            this.minDurabilityValue = minDurabilityValue;
+        }
+
+        public void setMinDurabilityPercentage(double minDurabilityPercentage) {
+            this.minDurabilityPercentage = minDurabilityPercentage;
+        }
     }
 }

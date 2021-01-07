@@ -1,21 +1,25 @@
 package ru.berdinskiybear.armorhud;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
-import ru.berdinskiybear.armorhud.config.ArmorHudConfigReloader;
 
-public class ArmorHudMod implements ClientModInitializer {
-
+public final class ArmorHudMod {
     public static final String MOD_ID = "armor_hud";
     public static final String MOD_NAME = "BerdinskiyBear's ArmorHUD";
-    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+
+    public static final String FABRIC_RESOURCE_LOADER_ID = "fabric-resource-loader-v0";
+    public static final String CLOTH_CONFIG_ID = "cloth-config2";
+
     public static final Text CONFIG_SCREEN_NAME = new TranslatableText("armorHud.configScreen.title");
+
+    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+
+    public static ArmorHudConfig.MutableConfig temporaryConfig;
+    public static ArmorHudConfig.MutableConfig previewConfig = new ArmorHudConfig.MutableConfig();
 
     private static ArmorHudConfig currentConfig;
 
@@ -27,12 +31,12 @@ public class ArmorHudMod implements ClientModInitializer {
         ArmorHudMod.currentConfig = currentConfig;
     }
 
-    @Override
-    public void onInitializeClient() {
-        setCurrentConfig(ArmorHudConfig.readConfigFile());
-        if (FabricLoader.getInstance().isModLoaded("fabric-resource-loader-v0")) {
-            ArmorHudConfigReloader.register();
-        }
+    public static void writeCurrentConfig() {
+        ArmorHudConfig.writeConfigFile(ArmorHudMod.getCurrentConfig());
+    }
+
+    public static void readCurrentConfig() {
+        ArmorHudMod.setCurrentConfig(ArmorHudConfig.readConfigFile());
     }
 
     public static void log(String message) {

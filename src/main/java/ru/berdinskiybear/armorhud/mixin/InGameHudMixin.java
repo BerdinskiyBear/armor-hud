@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.berdinskiybear.armorhud.ArmorHudMod;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
-import ru.berdinskiybear.armorhud.config.ArmorHudConfigScreenBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -331,6 +330,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
      * @return Current config
      */
     private ArmorHudConfig armorHud_getCurrentArmorHudConfig() {
-        return this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudConfigScreenBuilder.previewConfig : ArmorHudMod.getCurrentConfig();
+        return this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudMod.previewConfig : ArmorHudMod.getCurrentConfig();
     }
 }

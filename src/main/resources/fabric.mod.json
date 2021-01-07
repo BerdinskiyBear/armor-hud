@@ -18,7 +18,7 @@
   "entrypoints": {
     "main": [],
     "client": [
-      "ru.berdinskiybear.armorhud.ArmorHudMod"
+      "ru.berdinskiybear.armorhud.ArmorHudModEntrypoint"
     ],
     "server": [],
     "modmenu": [
