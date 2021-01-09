@@ -36,5 +36,8 @@
   "armorHud.configScreen.setting.minDurabilityValue.description": "Если значение прочности равно или ниже чем эта настройка, то предупреждение может быть показано.",
 
   "armorHud.configScreen.setting.minDurabilityPercentage.name": "Минимальный процент прочности",
-  "armorHud.configScreen.setting.minDurabilityPercentage.description": "Если остаток прочности равен или ниже чем заданый процент, то предупреждение может быть показано."
+  "armorHud.configScreen.setting.minDurabilityPercentage.description": "Если остаток прочности равен или ниже чем заданый процент, то предупреждение может быть показано.",
+
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Период движения иконки предупреждения",
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Период в секундах, с которым иконка предупреждения будет колебаться. Ниже значение, быстрее движение. Значение 0 остановит движение."
 }

@@ -36,5 +36,8 @@
   "armorHud.configScreen.setting.minDurabilityValue.description": "If durability value is equal or lower than this setting, a warning can be shown.",
 
   "armorHud.configScreen.setting.minDurabilityPercentage.name": "Minimum durability percentage",
-  "armorHud.configScreen.setting.minDurabilityPercentage.description": "If durability is equal or below this percentage, a warning can be shown."
+  "armorHud.configScreen.setting.minDurabilityPercentage.description": "If durability is equal or below this percentage, a warning can be shown.",
+
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Warning icon bobbing period",
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "This parameter defines how quickly warning icon will move up and down when shown. Lower the number quicker the motion. Set to 0 if you want to disable bobbing."
 }

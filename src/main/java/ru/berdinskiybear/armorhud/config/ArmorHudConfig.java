@@ -25,6 +25,7 @@ public class ArmorHudConfig {
     protected boolean warningShown;
     protected int minDurabilityValue;
     protected double minDurabilityPercentage;
+    protected float warningIconBobbingIntervalMs;
 
     public ArmorHudConfig() {
         this.enabled = true;
@@ -39,6 +40,7 @@ public class ArmorHudConfig {
         this.warningShown = true;
         this.minDurabilityValue = 5;
         this.minDurabilityPercentage = 0.05D;
+        this.warningIconBobbingIntervalMs = 2000.0F;
     }
 
     public ArmorHudConfig(ArmorHudConfig original) {
@@ -54,6 +56,7 @@ public class ArmorHudConfig {
         this.warningShown = original.warningShown;
         this.minDurabilityValue = original.minDurabilityValue;
         this.minDurabilityPercentage = original.minDurabilityPercentage;
+        this.warningIconBobbingIntervalMs = original.warningIconBobbingIntervalMs;
     }
 
     public static ArmorHudConfig readConfigFile() {
@@ -142,6 +145,10 @@ public class ArmorHudConfig {
         return minDurabilityPercentage;
     }
 
+    public float getWarningIconBobbingIntervalMs() {
+        return warningIconBobbingIntervalMs;
+    }
+
     public enum Anchor {
         TOP_CENTER,
         TOP,
@@ -222,6 +229,10 @@ public class ArmorHudConfig {
 
         public void setMinDurabilityPercentage(double minDurabilityPercentage) {
             this.minDurabilityPercentage = minDurabilityPercentage;
+        }
+
+        public void setWarningIconBobbingIntervalMs(float warningIconBobbingIntervalMs) {
+            this.warningIconBobbingIntervalMs = warningIconBobbingIntervalMs;
         }
     }
 }

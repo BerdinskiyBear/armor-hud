@@ -3,10 +3,7 @@ package ru.berdinskiybear.armorhud.config;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
-import me.shedaniel.clothconfig2.gui.entries.DoubleListEntry;
-import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
-import me.shedaniel.clothconfig2.gui.entries.IntegerListEntry;
+import me.shedaniel.clothconfig2.gui.entries.*;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -214,6 +211,23 @@ public class ArmorHudConfigScreenBuilder {
                 .build();
         category.addEntry(minDurabilityPercentageEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.minDurabilityPercentage.description")).build());
+
+        final float minWarningIconBobbingInterval = 0.2F;
+        FloatListEntry warningIconBobbingIntervalEntry = configEntryBuilder
+                .startFloatField(new TranslatableText("armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name"), ArmorHudMod.getCurrentConfig().getWarningIconBobbingIntervalMs() / 1000.0F)
+                .setDefaultValue(defaultConfig.getWarningIconBobbingIntervalMs() / 1000.0F)
+                .setSaveConsumer((Float value) -> ArmorHudMod.temporaryConfig.setWarningIconBobbingIntervalMs(value * 1000.0F))
+                .setErrorSupplier((Float value) -> {
+                    if (value != 0.0F && value < minWarningIconBobbingInterval)//
+                        return Optional.of(new TranslatableText("text.cloth-config.error.too_small", minWarningIconBobbingInterval));
+                    ArmorHudMod.previewConfig.setWarningIconBobbingIntervalMs(value * 1000.0F);
+                    return Optional.empty();
+                })
+                //.setMin(minWarningIconBobbingInterval)
+                .setMax(5.0F)
+                .build();
+        category.addEntry(warningIconBobbingIntervalEntry);
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description")).build());
 
         return configBuilder.build();
     }

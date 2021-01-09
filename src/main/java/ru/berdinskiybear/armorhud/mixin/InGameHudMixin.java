@@ -56,7 +56,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private static final int armorHud_minWarningHeight = 2;
     private static final int armorHud_maxWarningHeight = 7;
     private static final int armorHud_warningHorizontalOffset = 7;
-    private static final float armorHud_warningIconBobbingCycleLengthMs = 2000.0F;
 
     private long armorHud_lastMeasuredTime;
     private long armorHud_measuredTime;
@@ -305,10 +304,19 @@ public abstract class InGameHudMixin extends DrawableHelper {
             armorHud_cycleProgress = new float[]{this.random.nextFloat(), this.random.nextFloat(), this.random.nextFloat(), this.random.nextFloat()};
         }
 
-        // if the game is paused then we really do not need warning icons to bob
+        // if interval was set to 0 then it means that icons should not bob so we always return 0.5 and don't update progress
+        if (currentArmorHudConfig.getWarningIconBobbingIntervalMs() == 0.0F) {
+            return 0.5F;
+        }
+
+        // we want progress updated only when we want icons to move, that is if game is not paused or config screen is open
         if (!this.client.isPaused() || currentArmorHudConfig.isPreview()) {
-            armorHud_cycleProgress[index] += (armorHud_measuredTime - armorHud_lastMeasuredTime) / InGameHudMixin.armorHud_warningIconBobbingCycleLengthMs;
+            armorHud_cycleProgress[index] += (armorHud_measuredTime - armorHud_lastMeasuredTime) / currentArmorHudConfig.getWarningIconBobbingIntervalMs();
             armorHud_cycleProgress[index] %= 1.0F;
+
+            // just in case progress became less than 0 or NaN we set it to some random value
+            if (armorHud_cycleProgress[index] < 0 || Float.isNaN(armorHud_cycleProgress[index]))
+                armorHud_cycleProgress[index] = this.random.nextFloat();
         }
 
         return armorHud_cycleProgress[index];
