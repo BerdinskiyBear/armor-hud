@@ -21,7 +21,7 @@
   "armorHud.configScreen.setting.offsetY.description": "Offsets widget position on a vertical axis, otherwise the same as X offset.",
 
   "armorHud.configScreen.setting.widgetShown.name": "Widget shown",
-  "armorHud.configScreen.setting.widgetShown.description": "This setting defines when slots of the HUD widget are shown.\n%1$s - slots are always shown.\n%2$s - all slots are shown if at least one of the armor slots is not empty.\n%3$s - only not empty slots are shown",
+  "armorHud.configScreen.setting.widgetShown.description": "This setting defines when slots of the HUD widget are shown.\n%1$s - slots are always shown.\n%2$s - all slots are shown if at least one of the armor slots is not empty.\n%3$s - only not empty slots are shown.",
 
   "armorHud.configScreen.setting.reversed.name": "Reverse order of armor items",
   "armorHud.configScreen.setting.reversed.description": "Reverses order of armor items in the slots of the widget.",
@@ -33,10 +33,10 @@
   "armorHud.configScreen.setting.warningShown.description": "If enabled, a small warning will appear at the slot of the item with low durability.",
 
   "armorHud.configScreen.setting.minDurabilityValue.name": "Minimum durability value",
-  "armorHud.configScreen.setting.minDurabilityValue.description": "If durability value is equal or lower than this setting, a warning can be shown.",
+  "armorHud.configScreen.setting.minDurabilityValue.description": "If durability value of a displayed item is equal or lower than this setting, a warning can be shown.",
 
   "armorHud.configScreen.setting.minDurabilityPercentage.name": "Minimum durability percentage",
-  "armorHud.configScreen.setting.minDurabilityPercentage.description": "If durability is equal or below this percentage, a warning can be shown.",
+  "armorHud.configScreen.setting.minDurabilityPercentage.description": "If durability of a displayed item is equal or below this percentage, a warning can be shown.",
 
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Warning icon bobbing period",
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "This parameter defines how quickly warning icon will move up and down when shown. Lower the number quicker the motion. Set to 0 if you want to disable bobbing."
