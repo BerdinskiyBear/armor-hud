@@ -21,24 +21,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.berdinskiybear.armorhud.ArmorHudMod;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
-    @Shadow
-    @Final
-    private MinecraftClient client;
-    @Shadow
-    @Final
-    private Random random;
+    @Shadow @Final private MinecraftClient client;
+    @Shadow @Final private Random random;
 
-    @Shadow
-    private int scaledWidth;
-    @Shadow
-    private int scaledHeight;
+    @Shadow private int scaledWidth;
+    @Shadow private int scaledHeight;
 
     private static final Identifier armorHud_WIDGETS_TEXTURE = new Identifier("textures/gui/widgets.png");
     private static final Identifier armorHud_EMPTY_HELMET_SLOT_TEXTURE = new Identifier("item/empty_armor_slot_helmet");
@@ -112,6 +105,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     final int verticalMultiplier;
                     final int verticalOffsetMultiplier;
                     final int widgetWidth;
+                    final int slots;
 
                     // here i calculate position of the widget, its width and all sorts of multipliers based of current config
                     {
@@ -182,7 +176,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                 throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
                         }
 
-                        int slots = currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.NOT_EMPTY ? amount : 4;
+                        slots = currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.NOT_EMPTY ? amount : 4;
                         widgetWidth = armorHud_width + ((slots - 1) * armorHud_step);
 
                         int armorWidgetX1;
@@ -214,10 +208,31 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     RenderSystem.defaultBlendFunc();
 
                     // here i draw the slots
-                    {
-                        int endPieceLength = 3;
-                        this.drawTexture(matrices, armorWidgetX, armorWidgetY, 0, 0, widgetWidth - endPieceLength, armorHud_height);
-                        this.drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 179, 0, endPieceLength, armorHud_height);
+                    switch (currentArmorHudConfig.getStyle()) {
+                        case STYLE_1_E:
+                            this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
+                            break;
+                        case STYLE_1_H:
+                            this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
+                            break;
+                        case STYLE_1_S:
+                            this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
+                            break;
+                        case STYLE_2_E:
+                            this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
+                            break;
+                        case STYLE_2_H:
+                            this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
+                            break;
+                        case STYLE_2_S:
+                            this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
+                            break;
+                        case STYLE_3:
+                            this.drawTexture(matrices, armorWidgetX, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
+                            for (int i = 0; i < slots; i++)
+                                this.drawTexture(matrices, armorWidgetX + (armorHud_width - armorHud_step) / 2 + i * armorHud_step, armorWidgetY, 24 + (armorHud_width - armorHud_step) / 2, 23, armorHud_step, armorHud_height);
+                            this.drawTexture(matrices, armorWidgetX + widgetWidth - (armorHud_width - armorHud_step) / 2, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
+                            break;
                     }
 
                     // here i draw warning icons if necessary
@@ -293,9 +308,24 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.client.getProfiler().pop();
     }
 
+    private void drawSlots1(MatrixStack matrices, int armorWidgetY, int armorWidgetX, int widgetWidth, int endPieceLength) {
+        this.drawTexture(matrices, armorWidgetX, armorWidgetY, 0, 0, widgetWidth - endPieceLength, armorHud_height);
+        this.drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 182 - endPieceLength, 0, endPieceLength, armorHud_height);
+    }
+
+    private void drawSlots2(MatrixStack matrices, int armorWidgetY, int armorWidgetX, int widgetWidth, int endPieceLength) {
+        this.drawTexture(matrices, armorWidgetX, armorWidgetY, 24, 23, endPieceLength, armorHud_height);
+        if (widgetWidth > endPieceLength * 2)
+            this.drawTexture(matrices, armorWidgetX + endPieceLength, armorWidgetY, endPieceLength, 0, widgetWidth - 2 * endPieceLength, armorHud_height);
+        if (widgetWidth - endPieceLength < endPieceLength)
+            endPieceLength = widgetWidth - endPieceLength;
+        this.drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 24 + armorHud_width - endPieceLength, 23, endPieceLength, armorHud_height);
+    }
+
     /**
      * @param index                 index
      * @param currentArmorHudConfig current config
+     *
      * @return cycle progress
      */
     private float armorHud_getCycleProgress(int index, ArmorHudConfig currentArmorHudConfig) {
@@ -331,9 +361,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
     }
 
     /**
-     * This function determines which config is supposed to be current.
-     * Usually the loaded config is considered current but if config screen is open
-     * then the preview config is used as current.
+     * This function determines which config is supposed to be current. Usually the loaded config is considered current
+     * but if config screen is open then the preview config is used as current.
      *
      * @return Current config
      */

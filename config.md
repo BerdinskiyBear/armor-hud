@@ -28,6 +28,19 @@ inside curly brackets). If any of the Configuration parameters are missing their
 1. ##### `"offsetY"`
     * Offsets widget position on a vertical axis, otherwise the same as X offset.
     * Default value: `0`
+1. ##### `"style"`
+    * Widget slot style defines how slots are drawn on the screen. If widget slots look weird
+      (for example, parts of texture do not match) with your resource pack you should try different styles to find
+      ones that work and choose one that you prefer.
+    * Possible values:
+        * `"STYLE_1_E"`
+        * `"STYLE_1_H"`
+        * `"STYLE_1_S"`
+        * `"STYLE_2_E"`
+        * `"STYLE_2_H"`
+        * `"STYLE_2_S"`
+        * `"STYLE_3"`
+    * Default value: `"STYLE_1_E"`
 1. ##### `"widgetShown"`
     * This setting defines when slots of the HUD widget are shown.
     * Possible values:

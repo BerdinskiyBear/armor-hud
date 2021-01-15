@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.Level;
 import ru.berdinskiybear.armorhud.ArmorHudMod;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,6 +17,7 @@ public class ArmorHudConfig {
     protected Side side;
     protected int offsetX;
     protected int offsetY;
+    protected Style style;
     protected WidgetShown widgetShown;
     protected OffhandSlotBehavior offhandSlotBehavior;
     protected boolean reversed;
@@ -33,6 +33,7 @@ public class ArmorHudConfig {
         this.side = Side.LEFT;
         this.offsetX = 0;
         this.offsetY = 0;
+        this.style = Style.STYLE_1_E;
         this.widgetShown = WidgetShown.NOT_EMPTY;
         this.offhandSlotBehavior = OffhandSlotBehavior.ADHERE;
         this.reversed = true;
@@ -49,6 +50,7 @@ public class ArmorHudConfig {
         this.side = original.side;
         this.offsetX = original.offsetX;
         this.offsetY = original.offsetY;
+        this.style = original.style;
         this.widgetShown = original.widgetShown;
         this.offhandSlotBehavior = original.offhandSlotBehavior;
         this.reversed = original.reversed;
@@ -117,6 +119,10 @@ public class ArmorHudConfig {
         return offsetY;
     }
 
+    public Style getStyle() {
+        return style;
+    }
+
     public WidgetShown getWidgetShown() {
         return widgetShown;
     }
@@ -173,6 +179,16 @@ public class ArmorHudConfig {
         NOT_EMPTY
     }
 
+    public enum Style {
+        STYLE_1_E,
+        STYLE_1_H,
+        STYLE_1_S,
+        STYLE_2_E,
+        STYLE_2_H,
+        STYLE_2_S,
+        STYLE_3
+    }
+
     public static class MutableConfig extends ArmorHudConfig {
 
         public MutableConfig() {
@@ -201,6 +217,10 @@ public class ArmorHudConfig {
 
         public void setOffsetY(int offsetY) {
             this.offsetY = offsetY;
+        }
+
+        public void setStyle(Style style) {
+            this.style = style;
         }
 
         public void setWidgetShown(WidgetShown widgetShown) {

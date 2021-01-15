@@ -39,5 +39,8 @@
   "armorHud.configScreen.setting.minDurabilityPercentage.description": "If durability of a displayed item is equal or below this percentage, a warning can be shown.",
 
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Warning icon bobbing period",
-  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "This parameter defines how quickly warning icon will move up and down when shown. Lower the number quicker the motion. Set to 0 if you want to disable bobbing."
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "This parameter defines how quickly warning icon will move up and down when shown. Lower the number quicker the motion. Set to 0 if you want to disable bobbing.",
+
+  "armorHud.configScreen.setting.style.name": "Widget slot style",
+  "armorHud.configScreen.setting.style.description": "Widget slot style defines how slots are drawn on the screen. If widget slots look weird (for example, parts of texture do not match) with your resource pack you should try different styles to find ones that work and choose one that you prefer."
 }

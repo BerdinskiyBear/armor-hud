@@ -9,11 +9,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import ru.berdinskiybear.armorhud.ArmorHudMod;
-import ru.berdinskiybear.armorhud.config.ArmorHudConfig.Anchor;
-import ru.berdinskiybear.armorhud.config.ArmorHudConfig.OffhandSlotBehavior;
-import ru.berdinskiybear.armorhud.config.ArmorHudConfig.Side;
-import ru.berdinskiybear.armorhud.config.ArmorHudConfig.WidgetShown;
-
+import ru.berdinskiybear.armorhud.config.ArmorHudConfig.*;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -132,6 +128,23 @@ public class ArmorHudConfigScreenBuilder {
         category.addEntry(offsetYEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offsetY.description")).build());
 
+        DropdownBoxEntry<Style> styleDropdownBoxEntry = configEntryBuilder
+                .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.style.name"),
+                        DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getStyle(), Style::valueOf, ArmorHudConfigScreenBuilder::styleToText),
+                        DropdownMenuBuilder.CellCreatorBuilder.of(ArmorHudConfigScreenBuilder::styleToText)
+                )
+                .setSelections(Arrays.asList(Style.values()))
+                .setDefaultValue(defaultConfig.getStyle())
+                .setSaveConsumer((Style value) -> ArmorHudMod.temporaryConfig.setStyle(value))
+                .setSuggestionMode(false)
+                .setErrorSupplier((Style value) -> {
+                    ArmorHudMod.previewConfig.setStyle(value);
+                    return Optional.empty();
+                })
+                .build();
+        category.addEntry(styleDropdownBoxEntry);
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.style.description", (Object[]) Side.values())).build());
+
         DropdownBoxEntry<WidgetShown> widgetShownDropdownBoxEntry = configEntryBuilder
                 .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.widgetShown.name"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getWidgetShown(), WidgetShown::valueOf, ArmorHudConfigScreenBuilder::widgetShownToText),
@@ -248,4 +261,7 @@ public class ArmorHudConfigScreenBuilder {
         return Text.of(value.name());
     }
 
+    private static Text styleToText(Style value) {
+        return Text.of(value.name());
+    }
 }

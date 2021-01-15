@@ -39,5 +39,8 @@
   "armorHud.configScreen.setting.minDurabilityPercentage.description": "Если остаток прочности равен или ниже чем заданый процент, то предупреждение может быть показано.",
 
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Период движения иконки предупреждения",
-  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Период в секундах, с которым иконка предупреждения будет колебаться. Ниже значение, быстрее движение. Значение 0 остановит движение."
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Период в секундах, с которым иконка предупреждения будет колебаться. Ниже значение, быстрее движение. Значение 0 остановит движение.",
+
+  "armorHud.configScreen.setting.style.name": "Cтиль виджета",
+  "armorHud.configScreen.setting.style.description": "Этот параметр определяет то, как виджет будет отображаться на экране. Если виджет отображается неправильно с Вашими наборами ресурсов (например части текстуры не совпадают), то Вы можете проверить при каких стилях виджет отображается правильно и выбрать тот стиль который Вы предпочетаете."
 }
