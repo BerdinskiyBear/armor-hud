@@ -1,9 +1,9 @@
 package ru.berdinskiybear.armorhud.config;
 
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.gui.entries.*;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -41,7 +41,22 @@ public class ArmorHudConfigScreenBuilder {
         ConfigCategory category = configBuilder.getOrCreateCategory(new TranslatableText("armorHud.configScreen.category"));
         ConfigEntryBuilder configEntryBuilder = configBuilder.entryBuilder();
 
-        BooleanListEntry enabledBooleanListEntry = configEntryBuilder
+        AbstractConfigListEntry<Boolean> enabledEntry;
+        AbstractConfigListEntry<Anchor> anchorEntry;
+        AbstractConfigListEntry<Side> sideEntry;
+        AbstractConfigListEntry<OffhandSlotBehavior> offhandSlotBehaviorEntry;
+        AbstractConfigListEntry<Integer> offsetXEntry;
+        AbstractConfigListEntry<Integer> offsetYEntry;
+        AbstractConfigListEntry<Style> styleEntry;
+        AbstractConfigListEntry<WidgetShown> widgetShownEntry;
+        AbstractConfigListEntry<Boolean> reversedEntry;
+        AbstractConfigListEntry<Boolean> iconsEntry;
+        AbstractConfigListEntry<Boolean> warningEntry;
+        AbstractConfigListEntry<Integer> minDurabilityValueEntry;
+        AbstractConfigListEntry<Double> minDurabilityPercentageEntry;
+        AbstractConfigListEntry<Float> warningIconBobbingIntervalEntry;
+
+        enabledEntry = configEntryBuilder
                 .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.enable.name"), ArmorHudMod.getCurrentConfig().isEnabled())
                 .setDefaultValue(defaultConfig.isEnabled())
                 .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setReversed(value))
@@ -50,10 +65,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(enabledBooleanListEntry);
+        category.addEntry(enabledEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.enable.description")).build());
 
-        DropdownBoxEntry<Anchor> anchorDropdownBoxEntry = configEntryBuilder
+        anchorEntry = configEntryBuilder
                 .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.anchor.name"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getAnchor(), Anchor::valueOf, ArmorHudConfigScreenBuilder::anchorToText),
                         DropdownMenuBuilder.CellCreatorBuilder.of(ArmorHudConfigScreenBuilder::anchorToText)
@@ -67,27 +82,22 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(anchorDropdownBoxEntry);
+        category.addEntry(anchorEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.anchor.description", (Object[]) Anchor.values())).build());
 
-        DropdownBoxEntry<Side> sideDropdownBoxEntry = configEntryBuilder
-                .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.side.name"),
-                        DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getSide(), Side::valueOf, ArmorHudConfigScreenBuilder::sideToText),
-                        DropdownMenuBuilder.CellCreatorBuilder.of(ArmorHudConfigScreenBuilder::sideToText)
-                )
-                .setSelections(Arrays.asList(Side.values()))
+        sideEntry = configEntryBuilder
+                .startEnumSelector(new TranslatableText("armorHud.configScreen.setting.side.name"), Side.class, ArmorHudMod.getCurrentConfig().getSide())
                 .setDefaultValue(defaultConfig.getSide())
                 .setSaveConsumer((Side value) -> ArmorHudMod.temporaryConfig.setSide(value))
-                .setSuggestionMode(false)
                 .setErrorSupplier((Side value) -> {
                     ArmorHudMod.previewConfig.setSide(value);
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(sideDropdownBoxEntry);
+        category.addEntry(sideEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.side.description", (Object[]) Side.values())).build());
 
-        DropdownBoxEntry<OffhandSlotBehavior> offhandSlotBehaviorDropdownBoxEntry = configEntryBuilder
+        offhandSlotBehaviorEntry = configEntryBuilder
                 .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.offhandSlot.name"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getOffhandSlotBehavior(), OffhandSlotBehavior::valueOf, ArmorHudConfigScreenBuilder::offhandToText),
                         DropdownMenuBuilder.CellCreatorBuilder.of(ArmorHudConfigScreenBuilder::offhandToText)
@@ -101,10 +111,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(offhandSlotBehaviorDropdownBoxEntry);
+        category.addEntry(offhandSlotBehaviorEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offhandSlot.description", (Object[]) OffhandSlotBehavior.values())).build());
 
-        IntegerListEntry offsetXEntry = configEntryBuilder
+        offsetXEntry = configEntryBuilder
                 .startIntField(new TranslatableText("armorHud.configScreen.setting.offsetX.name"), ArmorHudMod.getCurrentConfig().getOffsetX())
                 .setDefaultValue(defaultConfig.getOffsetX())
                 .setSaveConsumer((Integer value) -> ArmorHudMod.temporaryConfig.setOffsetX(value))
@@ -116,7 +126,7 @@ public class ArmorHudConfigScreenBuilder {
         category.addEntry(offsetXEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offsetX.description")).build());
 
-        IntegerListEntry offsetYEntry = configEntryBuilder
+        offsetYEntry = configEntryBuilder
                 .startIntField(new TranslatableText("armorHud.configScreen.setting.offsetY.name"), ArmorHudMod.getCurrentConfig().getOffsetY())
                 .setDefaultValue(defaultConfig.getOffsetY())
                 .setSaveConsumer((Integer value) -> ArmorHudMod.temporaryConfig.setOffsetY(value))
@@ -128,7 +138,7 @@ public class ArmorHudConfigScreenBuilder {
         category.addEntry(offsetYEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offsetY.description")).build());
 
-        DropdownBoxEntry<Style> styleDropdownBoxEntry = configEntryBuilder
+        styleEntry = configEntryBuilder
                 .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.style.name"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getStyle(), Style::valueOf, ArmorHudConfigScreenBuilder::styleToText),
                         DropdownMenuBuilder.CellCreatorBuilder.of(ArmorHudConfigScreenBuilder::styleToText)
@@ -142,10 +152,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(styleDropdownBoxEntry);
+        category.addEntry(styleEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.style.description", (Object[]) Side.values())).build());
 
-        DropdownBoxEntry<WidgetShown> widgetShownDropdownBoxEntry = configEntryBuilder
+        widgetShownEntry = configEntryBuilder
                 .startDropdownMenu(new TranslatableText("armorHud.configScreen.setting.widgetShown.name"),
                         DropdownMenuBuilder.TopCellElementBuilder.of(ArmorHudMod.getCurrentConfig().getWidgetShown(), WidgetShown::valueOf, ArmorHudConfigScreenBuilder::widgetShownToText),
                         DropdownMenuBuilder.CellCreatorBuilder.of(ArmorHudConfigScreenBuilder::widgetShownToText)
@@ -159,10 +169,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(widgetShownDropdownBoxEntry);
+        category.addEntry(widgetShownEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.widgetShown.description", (Object[]) WidgetShown.values())).build());
 
-        BooleanListEntry reversedBooleanListEntry = configEntryBuilder
+        reversedEntry = configEntryBuilder
                 .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.reversed.name"), ArmorHudMod.getCurrentConfig().isReversed())
                 .setDefaultValue(defaultConfig.isReversed())
                 .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setReversed(value))
@@ -171,10 +181,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(reversedBooleanListEntry);
+        category.addEntry(reversedEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.reversed.description")).build());
 
-        BooleanListEntry iconsBooleanListEntry = configEntryBuilder
+        iconsEntry = configEntryBuilder
                 .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.iconsShown.name"), ArmorHudMod.getCurrentConfig().getIconsShown())
                 .setDefaultValue(defaultConfig.getIconsShown())
                 .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setIconsShown(value))
@@ -183,10 +193,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(iconsBooleanListEntry);
+        category.addEntry(iconsEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.iconsShown.description")).build());
 
-        BooleanListEntry warningBooleanListEntry = configEntryBuilder
+        warningEntry = configEntryBuilder
                 .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.warningShown.name"), ArmorHudMod.getCurrentConfig().isWarningShown())
                 .setDefaultValue(defaultConfig.isWarningShown())
                 .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setWarningShown(value))
@@ -195,10 +205,10 @@ public class ArmorHudConfigScreenBuilder {
                     return Optional.empty();
                 })
                 .build();
-        category.addEntry(warningBooleanListEntry);
+        category.addEntry(warningEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.warningShown.description")).build());
 
-        IntegerListEntry minDurabilityValueEntry = configEntryBuilder
+        minDurabilityValueEntry = configEntryBuilder
                 .startIntField(new TranslatableText("armorHud.configScreen.setting.minDurabilityValue.name"), ArmorHudMod.getCurrentConfig().getMinDurabilityValue())
                 .setDefaultValue(defaultConfig.getMinDurabilityValue())
                 .setSaveConsumer((Integer value) -> ArmorHudMod.temporaryConfig.setMinDurabilityValue(value))
@@ -211,7 +221,7 @@ public class ArmorHudConfigScreenBuilder {
         category.addEntry(minDurabilityValueEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.minDurabilityValue.description")).build());
 
-        DoubleListEntry minDurabilityPercentageEntry = configEntryBuilder
+        minDurabilityPercentageEntry = configEntryBuilder
                 .startDoubleField(new TranslatableText("armorHud.configScreen.setting.minDurabilityPercentage.name"), ArmorHudMod.getCurrentConfig().getMinDurabilityPercentage() * 100.0D)
                 .setDefaultValue(defaultConfig.getMinDurabilityPercentage() * 100.0D)
                 .setSaveConsumer((Double value) -> ArmorHudMod.temporaryConfig.setMinDurabilityPercentage(value / 100.0D))
@@ -226,7 +236,7 @@ public class ArmorHudConfigScreenBuilder {
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.minDurabilityPercentage.description")).build());
 
         final float minWarningIconBobbingInterval = 0.2F;
-        FloatListEntry warningIconBobbingIntervalEntry = configEntryBuilder
+        warningIconBobbingIntervalEntry = configEntryBuilder
                 .startFloatField(new TranslatableText("armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name"), ArmorHudMod.getCurrentConfig().getWarningIconBobbingIntervalMs() / 1000.0F)
                 .setDefaultValue(defaultConfig.getWarningIconBobbingIntervalMs() / 1000.0F)
                 .setSaveConsumer((Float value) -> ArmorHudMod.temporaryConfig.setWarningIconBobbingIntervalMs(value * 1000.0F))
@@ -246,10 +256,6 @@ public class ArmorHudConfigScreenBuilder {
     }
 
     private static Text anchorToText(Anchor value) {
-        return Text.of(value.name());
-    }
-
-    private static Text sideToText(Side value) {
         return Text.of(value.name());
     }
 
