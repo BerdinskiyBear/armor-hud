@@ -3,7 +3,7 @@
   "id": "armor_hud",
   "version": "${version}",
   "name": "BerdinskiyBear's ArmorHUD",
-  "description": "Shows your current armor and its durability.",
+  "description": "This mod adds a minimalistic vanilla-like widget that shows your armor items and a warning if durability is low enough.",
   "authors": [
     "BerdinskiyBear"
   ],
