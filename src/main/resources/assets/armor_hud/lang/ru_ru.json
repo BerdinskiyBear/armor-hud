@@ -3,25 +3,25 @@
   "armorHud.configScreen.category": "Категория",
 
   "armorHud.configScreen.setting.enable.name": "Включить мод",
-  "armorHud.configScreen.setting.enable.description": "Главний выключатель всего мода.",
+  "armorHud.configScreen.setting.enable.description": "Главный выключатель всего мода.",
 
   "armorHud.configScreen.setting.anchor.name": "Расположение",
-  "armorHud.configScreen.setting.anchor.description": "Место где виджет мода расположен.\n%1$s - виджет расположен сверху посередине.\n%2$s - виджет расположен в верхнем углу экрана на выбраной ниже стороне.\n%3$s - виджет расположен в нижнем углу экрана на выбраной ниже стороне.\n%4$s - виджет расположен на выбраной стороне от панели быстрого доступа.",
+  "armorHud.configScreen.setting.anchor.description": "Место где виджет мода расположен.\n%1$s - виджет расположен сверху посередине.\n%2$s - виджет расположен в верхнем углу экрана на выбранной ниже стороне.\n%3$s - виджет расположен в нижнем углу экрана на выбранной ниже стороне.\n%4$s - виджет расположен на выбранной стороне от панели быстрого доступа.",
 
   "armorHud.configScreen.setting.side.name": "Сторона",
   "armorHud.configScreen.setting.side.description": "Сторона на которой виджет находится.\n%1$s - правая сторона.\n%2$s - левая сторона.\nЕсли виджет находится вверху посередине, то эта настройка не на что не влияет.",
 
   "armorHud.configScreen.setting.offhandSlot.name": "Влияние ячейки неведущей руки",
-  "armorHud.configScreen.setting.offhandSlot.description": "Эта настройка определяет, как виджет мода реагирует на ячейку неведущей руки и на индикатор атаки.\n%1$s - виджет никак не реагирует на ячейку неведущей руки и индикатор атаки.\n%2$s - виджет сдвигается в сторону если ячейка неведущей руки появляетя или если индикатор атаки настроен появлятья у панели быстрого доступа.\n%3$s - виджет всегда оставсяет место для ячейки неведущей руки и индикатора атаки.\nЕсли виджет не находится у панели, то эта настройка ничего не делает.",
+  "armorHud.configScreen.setting.offhandSlot.description": "Эта настройка определяет, как виджет мода реагирует на ячейку неведущей руки и на индикатор атаки.\n%1$s - виджет никак не реагирует на ячейку неведущей руки и индикатор атаки.\n%2$s - виджет сдвигается в сторону если ячейка неведущей руки появляется или если индикатор атаки настроен появляться у панели быстрого доступа.\n%3$s - виджет всегда оставляет место для ячейки неведущей руки и индикатора атаки.\nЕсли виджет не находится у панели, то эта настройка ничего не делает.",
 
   "armorHud.configScreen.setting.offsetX.name": "Сдвиг по X",
-  "armorHud.configScreen.setting.offsetX.description": "Сдвигает виджет по-горизонтали. Положительные числа свдигают виджет от места расположения.",
+  "armorHud.configScreen.setting.offsetX.description": "Сдвигает виджет по-горизонтали. Положительные числа сдвигают виджет от места расположения.",
 
   "armorHud.configScreen.setting.offsetY.name": "Сдвиг по Y",
-  "armorHud.configScreen.setting.offsetY.description": "Сдвигает виджет по-вертикали. Положительные числа свдигают виджет от места расположения.",
+  "armorHud.configScreen.setting.offsetY.description": "Сдвигает виджет по-вертикали. Положительные числа сдвигают виджет от места расположения.",
 
   "armorHud.configScreen.setting.widgetShown.name": "Условие отображения ячеек виджета",
-  "armorHud.configScreen.setting.widgetShown.description": "Эта настройка определяет когда ячейки виджета будут отображены.\n%1$s - виджет всегда отображён.\n%2$s - виджет отображён целиком если хотябы одна ячейка не пустая.\n%3$s - отображены толко непустые ячейки.",
+  "armorHud.configScreen.setting.widgetShown.description": "Эта настройка определяет когда ячейки виджета будут отображены.\n%1$s - виджет всегда отображён.\n%2$s - виджет отображён целиком если хотя бы одна ячейка не пустая.\n%3$s - отображены только непустые ячейки.",
 
   "armorHud.configScreen.setting.reversed.name": "Обратить порядок ячеек",
   "armorHud.configScreen.setting.reversed.description": "Отображает ячейки виджета в обратном порядке.",
@@ -30,17 +30,17 @@
   "armorHud.configScreen.setting.iconsShown.description": "В пустых ячейках будут показаны иконки такие же как и в меню инвентаря.",
 
   "armorHud.configScreen.setting.warningShown.name": "Показывать предупреждение",
-  "armorHud.configScreen.setting.warningShown.description": "Если прочность предмета брони станет ниже указаного ниже уровня, то небольшое предупреждение будет показано.",
+  "armorHud.configScreen.setting.warningShown.description": "Если прочность предмета брони станет ниже указанного ниже уровня, то небольшое предупреждение будет показано.",
 
   "armorHud.configScreen.setting.minDurabilityValue.name": "Минимальное значение прочности",
   "armorHud.configScreen.setting.minDurabilityValue.description": "Если значение прочности равно или ниже чем эта настройка, то предупреждение может быть показано.",
 
   "armorHud.configScreen.setting.minDurabilityPercentage.name": "Минимальный процент прочности",
-  "armorHud.configScreen.setting.minDurabilityPercentage.description": "Если остаток прочности равен или ниже чем заданый процент, то предупреждение может быть показано.",
+  "armorHud.configScreen.setting.minDurabilityPercentage.description": "Если остаток прочности равен или ниже чем заданный процент, то предупреждение может быть показано.",
 
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Период движения иконки предупреждения",
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Период в секундах, с которым иконка предупреждения будет колебаться. Ниже значение, быстрее движение. Значение 0 остановит движение.",
 
-  "armorHud.configScreen.setting.style.name": "Cтиль виджета",
-  "armorHud.configScreen.setting.style.description": "Этот параметр определяет то, как виджет будет отображаться на экране. Если виджет отображается неправильно с Вашими наборами ресурсов (например части текстуры не совпадают), то Вы можете проверить при каких стилях виджет отображается правильно и выбрать тот стиль который Вы предпочетаете."
+  "armorHud.configScreen.setting.style.name": "Стиль виджета",
+  "armorHud.configScreen.setting.style.description": "Этот параметр определяет то, как виджет будет отображаться на экране. Если виджет отображается неправильно с Вашими наборами ресурсов (например части текстуры не совпадают), то Вы можете проверить при каких стилях виджет отображается правильно и выбрать тот стиль который Вы предпочитаете."
 }
