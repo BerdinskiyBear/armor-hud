@@ -72,7 +72,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
         ArmorHudConfig currentArmorHudConfig = this.armorHud_getCurrentArmorHudConfig();
 
         // updating measuring time fields
-        this.armorHud_updateMeasuringTime();
+        {
+            armorHud_lastMeasuredTime = armorHud_measuredTime;
+            armorHud_measuredTime = Util.getMeasuringTimeMs();
+        }
 
         // if current config tells that this mod should be enabled then the action starts
         if (currentArmorHudConfig.isEnabled()) {
@@ -322,12 +325,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 24 + armorHud_width - endPieceLength, 23, endPieceLength, armorHud_height);
     }
 
-    /**
-     * @param index                 index
-     * @param currentArmorHudConfig current config
-     *
-     * @return cycle progress
-     */
     private float armorHud_getCycleProgress(int index, ArmorHudConfig currentArmorHudConfig) {
         // if warning icon bobbing cycle progress array wasn't initialised we do that now
         if (armorHud_cycleProgress == null) {
@@ -350,14 +347,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
         }
 
         return armorHud_cycleProgress[index];
-    }
-
-    /**
-     * This method updates measuring time.
-     */
-    private void armorHud_updateMeasuringTime() {
-        armorHud_lastMeasuredTime = armorHud_measuredTime;
-        armorHud_measuredTime = Util.getMeasuringTimeMs();
     }
 
     /**
