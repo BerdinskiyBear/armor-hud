@@ -59,7 +59,7 @@ public class ArmorHudConfigScreenBuilder {
         enabledEntry = configEntryBuilder
                 .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.enable.name"), ArmorHudMod.getCurrentConfig().isEnabled())
                 .setDefaultValue(defaultConfig.isEnabled())
-                .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setReversed(value))
+                .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setEnabled(value))
                 .setErrorSupplier((Boolean value) -> {
                     ArmorHudMod.previewConfig.setEnabled(value);
                     return Optional.empty();
