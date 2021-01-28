@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.berdinskiybear.armorhud.ArmorHudMod;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
@@ -55,6 +56,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private float[] armorHud_cycleProgress = null;
     private final List<ItemStack> armorHud_armorItems = new ArrayList<>(4);
     private final List<Integer> armorHud_armorItemIndexes = new ArrayList<>(4);
+    private int armorHud_shift = 0;
 
     @Shadow
     protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack);
@@ -357,5 +359,47 @@ public abstract class InGameHudMixin extends DrawableHelper {
      */
     private ArmorHudConfig armorHud_getCurrentArmorHudConfig() {
         return this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudMod.previewConfig : ArmorHudMod.getCurrentConfig();
+    }
+
+    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;bindTexture(Lnet/minecraft/util/Identifier;)V", shift = At.Shift.AFTER))
+    public void calculateStatusEffectIconsOffset(MatrixStack matrices, CallbackInfo ci) {
+        ArmorHudConfig currentConfig = this.armorHud_getCurrentArmorHudConfig();
+        if (currentConfig.isEnabled()) {
+            int add = 0;
+            if (currentConfig.getAnchor() == ArmorHudConfig.Anchor.TOP && currentConfig.getSide() == ArmorHudConfig.Side.RIGHT) {
+                int amount = 0;
+                PlayerEntity playerEntity = this.getCameraPlayer();
+                if (playerEntity != null) {
+                    for (ItemStack itemStack : playerEntity.inventory.armor) {
+                        if (!itemStack.isEmpty())
+                            amount++;
+                    }
+
+                    if (amount > 0 || currentConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS) {
+                        add += 22 + currentConfig.getOffsetY();
+                        if (currentConfig.isWarningShown() && this.armorHud_armorItems.stream().anyMatch((ItemStack itemStack) -> {
+                            if (itemStack.isDamageable()) {
+                                final int damage = itemStack.getDamage();
+                                final int maxDamage = itemStack.getMaxDamage();
+                                return ((1.0F - ((float) damage) / ((float) maxDamage) <= currentConfig.getMinDurabilityPercentage()) || (maxDamage - damage <= currentConfig.getMinDurabilityValue()));
+                            }
+                            return false;
+                        })) {
+                            add += 2 + 8;
+                            if (currentConfig.getWarningIconBobbingIntervalMs() != 0.0F) {
+                                add += 7;
+                            }
+                        }
+                    }
+                }
+            }
+            this.armorHud_shift = add;
+        } else
+            this.armorHud_shift = 0;
+    }
+
+    @ModifyVariable(method = "renderStatusEffectOverlay", at = @At(value = "STORE", ordinal = 0), ordinal = 3)
+    public int statusEffectIconsOffset(int y) {
+        return y + this.armorHud_shift;
     }
 }
