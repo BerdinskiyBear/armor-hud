@@ -56,7 +56,7 @@ public class BossBarHudMixin {
                     }
                 }
             }
-            return a + add;
+            return a + Math.max(add, 0);
         } else
             return a;
     }

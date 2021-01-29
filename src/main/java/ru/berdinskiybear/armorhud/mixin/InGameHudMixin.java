@@ -393,7 +393,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     }
                 }
             }
-            this.armorHud_shift = add;
+            this.armorHud_shift = Math.max(add, 0);
         } else
             this.armorHud_shift = 0;
     }
