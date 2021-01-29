@@ -60,7 +60,7 @@ public class SubtitlesHudMixin {
                     }
                 }
             }
-            this.offset = add;
+            this.offset = Math.max(add, 0);
         } else
             this.offset = 0;
     }
