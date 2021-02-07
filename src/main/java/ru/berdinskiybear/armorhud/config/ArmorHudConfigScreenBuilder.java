@@ -45,6 +45,9 @@ public class ArmorHudConfigScreenBuilder {
         AbstractConfigListEntry<Anchor> anchorEntry;
         AbstractConfigListEntry<Side> sideEntry;
         AbstractConfigListEntry<OffhandSlotBehavior> offhandSlotBehaviorEntry;
+        AbstractConfigListEntry<Boolean> pushBossbarsEntry;
+        AbstractConfigListEntry<Boolean> pushStatusEffectIconsEntry;
+        AbstractConfigListEntry<Boolean> pushSubtitlesEntry;
         AbstractConfigListEntry<Integer> offsetXEntry;
         AbstractConfigListEntry<Integer> offsetYEntry;
         AbstractConfigListEntry<Style> styleEntry;
@@ -113,6 +116,42 @@ public class ArmorHudConfigScreenBuilder {
                 .build();
         category.addEntry(offhandSlotBehaviorEntry);
         category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.offhandSlot.description", (Object[]) OffhandSlotBehavior.values())).build());
+
+        pushBossbarsEntry = configEntryBuilder
+                .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.pushBossbars.name"), ArmorHudMod.getCurrentConfig().getPushBossbars())
+                .setDefaultValue(defaultConfig.getPushBossbars())
+                .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setPushBossbars(value))
+                .setErrorSupplier((Boolean value) -> {
+                    ArmorHudMod.previewConfig.setPushBossbars(value);
+                    return Optional.empty();
+                })
+                .build();
+        category.addEntry(pushBossbarsEntry);
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.pushBossbars.description")).build());
+
+        pushStatusEffectIconsEntry = configEntryBuilder
+                .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.pushStatusEffectIcons.name"), ArmorHudMod.getCurrentConfig().getPushStatusEffectIcons())
+                .setDefaultValue(defaultConfig.getPushStatusEffectIcons())
+                .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setPushStatusEffectIcons(value))
+                .setErrorSupplier((Boolean value) -> {
+                    ArmorHudMod.previewConfig.setPushStatusEffectIcons(value);
+                    return Optional.empty();
+                })
+                .build();
+        category.addEntry(pushStatusEffectIconsEntry);
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.pushStatusEffectIcons.description")).build());
+
+        pushSubtitlesEntry = configEntryBuilder
+                .startBooleanToggle(new TranslatableText("armorHud.configScreen.setting.pushSubtitles.name"), ArmorHudMod.getCurrentConfig().getPushSubtitles())
+                .setDefaultValue(defaultConfig.getPushSubtitles())
+                .setSaveConsumer((Boolean value) -> ArmorHudMod.temporaryConfig.setPushSubtitles(value))
+                .setErrorSupplier((Boolean value) -> {
+                    ArmorHudMod.previewConfig.setPushSubtitles(value);
+                    return Optional.empty();
+                })
+                .build();
+        category.addEntry(pushSubtitlesEntry);
+        category.addEntry(configEntryBuilder.startTextDescription(new TranslatableText("armorHud.configScreen.setting.pushSubtitles.description")).build());
 
         offsetXEntry = configEntryBuilder
                 .startIntField(new TranslatableText("armorHud.configScreen.setting.offsetX.name"), ArmorHudMod.getCurrentConfig().getOffsetX())

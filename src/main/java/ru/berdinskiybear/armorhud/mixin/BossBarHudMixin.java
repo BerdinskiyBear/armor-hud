@@ -24,7 +24,7 @@ public class BossBarHudMixin {
     @ModifyVariable(method = "render", at = @At(value = "STORE", ordinal = 0), ordinal = 1)
     public int anInt(int a) {
         ArmorHudConfig currentConfig = this.armorHud_getCurrentArmorHudConfig();
-        if (currentConfig.isEnabled()) {
+        if (currentConfig.isEnabled() && currentConfig.getPushBossbars()) {
             int add = 0;
             if (currentConfig.getAnchor() == ArmorHudConfig.Anchor.TOP_CENTER) {
                 int amount = 0;

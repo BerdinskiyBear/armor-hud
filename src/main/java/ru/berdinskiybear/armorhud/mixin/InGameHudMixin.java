@@ -364,7 +364,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;bindTexture(Lnet/minecraft/util/Identifier;)V", shift = At.Shift.AFTER))
     public void calculateStatusEffectIconsOffset(MatrixStack matrices, CallbackInfo ci) {
         ArmorHudConfig currentConfig = this.armorHud_getCurrentArmorHudConfig();
-        if (currentConfig.isEnabled()) {
+        if (currentConfig.isEnabled() && currentConfig.getPushStatusEffectIcons()) {
             int add = 0;
             if (currentConfig.getAnchor() == ArmorHudConfig.Anchor.TOP && currentConfig.getSide() == ArmorHudConfig.Side.RIGHT) {
                 int amount = 0;

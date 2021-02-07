@@ -20,6 +20,9 @@ public class ArmorHudConfig {
     protected Style style;
     protected WidgetShown widgetShown;
     protected OffhandSlotBehavior offhandSlotBehavior;
+    protected boolean pushBossbars;
+    protected boolean pushStatusEffectIcons;
+    protected boolean pushSubtitles;
     protected boolean reversed;
     protected boolean iconsShown;
     protected boolean warningShown;
@@ -36,6 +39,9 @@ public class ArmorHudConfig {
         this.style = Style.STYLE_1_E;
         this.widgetShown = WidgetShown.NOT_EMPTY;
         this.offhandSlotBehavior = OffhandSlotBehavior.ADHERE;
+        this.pushBossbars = true;
+        this.pushStatusEffectIcons = true;
+        this.pushSubtitles = true;
         this.reversed = true;
         this.iconsShown = true;
         this.warningShown = true;
@@ -53,6 +59,9 @@ public class ArmorHudConfig {
         this.style = original.style;
         this.widgetShown = original.widgetShown;
         this.offhandSlotBehavior = original.offhandSlotBehavior;
+        this.pushBossbars = original.pushBossbars;
+        this.pushStatusEffectIcons = original.pushStatusEffectIcons;
+        this.pushSubtitles = original.pushSubtitles;
         this.reversed = original.reversed;
         this.iconsShown = original.iconsShown;
         this.warningShown = original.warningShown;
@@ -129,6 +138,18 @@ public class ArmorHudConfig {
 
     public OffhandSlotBehavior getOffhandSlotBehavior() {
         return offhandSlotBehavior;
+    }
+
+    public boolean getPushBossbars() {
+        return this.pushBossbars;
+    }
+
+    public boolean getPushStatusEffectIcons() {
+        return this.pushStatusEffectIcons;
+    }
+
+    public boolean getPushSubtitles() {
+        return this.pushSubtitles;
     }
 
     public boolean isReversed() {
@@ -229,6 +250,18 @@ public class ArmorHudConfig {
 
         public void setOffhandSlotBehavior(OffhandSlotBehavior offhandSlotBehavior) {
             this.offhandSlotBehavior = offhandSlotBehavior;
+        }
+
+        public void setPushBossbars(boolean pushBossbars) {
+            this.pushBossbars = pushBossbars;
+        }
+
+        public void setPushStatusEffectIcons(boolean pushStatusEffectIcons) {
+            this.pushStatusEffectIcons = pushStatusEffectIcons;
+        }
+
+        public void setPushSubtitles(boolean pushSubtitles) {
+            this.pushSubtitles = pushSubtitles;
         }
 
         public void setReversed(boolean reversed) {
