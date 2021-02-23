@@ -56,6 +56,15 @@ inside curly brackets). If any of the Configuration parameters are missing their
         * `"ADHERE"`: widget moves away when offhand slot is shown or attack indicator is at hotbar.
         * `"ALWAYS_LEAVE_SPACE"`: widget always leaves space for the offhand slot even if it is not shown.
     * Default value: `"ADHERE"`
+1. ##### `"pushBossbars"`
+   * If widget is at the top in the middle bossbars will be pushed down by the widget.
+   * Default value: `true`
+1. ##### `"pushStatusEffectIcons"`
+   * If widget is at the top right corner effect icons will be pushed down by the widget.
+   * Default value: `true`
+1. ##### `"pushSubtitles"`
+   * If widget is at the bottom right corner subtitles will be pushed up by the widget.
+   * Default value: `true`
 1. ##### `"reversed"`
     * Reverses order of armor items in the slots of the widget.
     * Default value: `true`

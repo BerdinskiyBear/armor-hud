@@ -14,6 +14,15 @@
   "armorHud.configScreen.setting.offhandSlot.name": "Offhand slot behaviour",
   "armorHud.configScreen.setting.offhandSlot.description": "This setting defines the way widget reacts to offhand slot and attack indicator if it is at the hotbar.\n%1$s - widget never moves away to make space for hotbar or attack indicator.\n%2$s - widget moves away when offhand slot is shown or attack indicator is at hotbar.\n%3$s - widget always leaves space for the offhand slot even if it is not shown.\nSetting does nothing unless widget is anchored at the hotbar.",
 
+  "armorHud.configScreen.setting.pushBossbars.name": "Push bossbar",
+  "armorHud.configScreen.setting.pushBossbars.description": "If widget is at the top in the middle bossbars will be pushed down by the widget.",
+
+  "armorHud.configScreen.setting.pushStatusEffectIcons.name": "Push effect icons",
+  "armorHud.configScreen.setting.pushStatusEffectIcons.description": "If widget is at the top right corner effect icons will be pushed down by the widget.",
+
+  "armorHud.configScreen.setting.pushSubtitles.name": "Push subtitles",
+  "armorHud.configScreen.setting.pushSubtitles.description": "If widget is at the bottom right corner subtitles will be pushed up by the widget.",
+
   "armorHud.configScreen.setting.offsetX.name": "X offset",
   "armorHud.configScreen.setting.offsetX.description": "Offsets widget position on a horizontal axis. Positive numbers moves away from anchor point, negative numbers move widget onto the anchor point.",
 

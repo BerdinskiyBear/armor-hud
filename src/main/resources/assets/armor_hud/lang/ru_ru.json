@@ -14,6 +14,15 @@
   "armorHud.configScreen.setting.offhandSlot.name": "Влияние ячейки неведущей руки",
   "armorHud.configScreen.setting.offhandSlot.description": "Эта настройка определяет, как виджет мода реагирует на ячейку неведущей руки и на индикатор атаки.\n%1$s - виджет никак не реагирует на ячейку неведущей руки и индикатор атаки.\n%2$s - виджет сдвигается в сторону если ячейка неведущей руки появляется или если индикатор атаки настроен появляться у панели быстрого доступа.\n%3$s - виджет всегда оставляет место для ячейки неведущей руки и индикатора атаки.\nЕсли виджет не находится у панели, то эта настройка ничего не делает.",
 
+  "armorHud.configScreen.setting.pushBossbars.name": "Смещать боссбар",
+  "armorHud.configScreen.setting.pushBossbars.description": "Если виджет наверху посредине, то боссбары будут смещены вниз.",
+
+  "armorHud.configScreen.setting.pushStatusEffectIcons.name": "Смещать иконки эффекты",
+  "armorHud.configScreen.setting.pushStatusEffectIcons.description": "Если виджет наверху справа, то иконки эффектов будут смещены вниз.",
+
+  "armorHud.configScreen.setting.pushSubtitles.name": "Смещать субтитры",
+  "armorHud.configScreen.setting.pushSubtitles.description": "Если виджет внизу справа, то субтитры будут смещены вверх.",
+
   "armorHud.configScreen.setting.offsetX.name": "Сдвиг по X",
   "armorHud.configScreen.setting.offsetX.description": "Сдвигает виджет по-горизонтали. Положительные числа сдвигают виджет от места расположения.",
 
