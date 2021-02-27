@@ -14,6 +14,15 @@
   "armorHud.configScreen.setting.offhandSlot.name": "Comportamento della mano non dominante",
   "armorHud.configScreen.setting.offhandSlot.description": "Questa impostazione definisce come deve comportarsi il widget quando lo slot della mano non dominante è presente e/o l'indicatore di attacco è sull'hotbar.\n%1$s - il widget non si allontana mai per fare spazio alla hotbar o all'indicatore di attacco.\n%2$s - il widget si allontana quando lo slot della mano non dominante è presente o l'indicatore di attacco è sulla hotbar.\n%3$s - il widget lascia sempre spazio allo slot della mano non dominante anche se non è mostrato.\nL'impostazione non fa nulla se il widget non è ancorato alla hotbar.",
   
+  "armorHud.configScreen.setting.pushBossbars.name": "Sposta la barra della salute del boss",
+  "armorHud.configScreen.setting.pushBossbars.description": "Se il widget è ancorato al centro nel mezzo, la barra della salute del boss sarà spinta verso il basso dal widget.",
+
+  "armorHud.configScreen.setting.pushStatusEffectIcons.name": "Sposta le icone degli effetti",
+  "armorHud.configScreen.setting.pushStatusEffectIcons.description": "Se il widget è ancorato in alto a destra, le icone degli effetti saranno spinte verso il basso dal widget.",
+
+  "armorHud.configScreen.setting.pushSubtitles.name": "Sposta sottotitoli",
+  "armorHud.configScreen.setting.pushSubtitles.description": "Se il widget è ancorato nell'angolo in basso a destra, i sottotitoli saranno spinti verso l'alto dal widget.",
+
   "armorHud.configScreen.setting.offsetX.name": "Offset X",
   "armorHud.configScreen.setting.offsetX.description": "Offset della posizione del widget sull'asse orizzontale. Un numero positivo allontanerà il widget dal punto di ancoraggio, un numero negativo lo avvicinerà.",
 
