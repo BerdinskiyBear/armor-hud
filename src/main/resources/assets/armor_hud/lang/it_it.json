@@ -1,0 +1,56 @@
+{
+  "armorHud.configScreen.title": "Configurazione Armor HUD mod di BerdinskiyBear",
+  "armorHud.configScreen.category": "Categoria",
+
+  "armorHud.configScreen.setting.enable.name": "Abilitato",
+  "armorHud.configScreen.setting.enable.description": "Interruttore generale per questa mod.",
+
+  "armorHud.configScreen.setting.anchor.name": "Punto di ancoraggio",
+  "armorHud.configScreen.setting.anchor.description": "Punto a cui il widget HUD è ancorato.\n%1$s - il widget è posto in alto al centro.\n%2$s - il widget è posto nell'angolo superiore sul lato preferito.\n%3$s - il widget è posto nell'angolo inferiore sul lato preferito.\n%4$s - il widget è posto a lato dell'hotbar.",
+
+  "armorHud.configScreen.setting.side.name": "Lato preferito",
+  "armorHud.configScreen.setting.side.description": "Lato in cui viene mostrato il widget. Se il widget è ancorato in alto al centro, questa impostazione non fa nulla.",
+
+  "armorHud.configScreen.setting.offhandSlot.name": "Comportamento della mano non dominante",
+  "armorHud.configScreen.setting.offhandSlot.description": "Questa impostazione definisce come deve comportarsi il widget quando lo slot della mano non dominante è presente e/o l'indicatore di attacco è sull'hotbar.\n%1$s - il widget non si allontana mai per fare spazio alla hotbar o all'indicatore di attacco.\n%2$s - il widget si allontana quando lo slot della mano non dominante è presente o l'indicatore di attacco è sulla hotbar.\n%3$s - il widget lascia sempre spazio allo slot della mano non dominante anche se non è mostrato.\nL'impostazione non fa nulla se il widget non è ancorato alla hotbar.",
+  
+  "armorHud.configScreen.setting.pushBossbars.name": "Sposta la barra della salute del boss",
+  "armorHud.configScreen.setting.pushBossbars.description": "Se il widget è ancorato al centro nel mezzo, la barra della salute del boss sarà spinta verso il basso dal widget.",
+
+  "armorHud.configScreen.setting.pushStatusEffectIcons.name": "Sposta le icone degli effetti",
+  "armorHud.configScreen.setting.pushStatusEffectIcons.description": "Se il widget è ancorato in alto a destra, le icone degli effetti saranno spinte verso il basso dal widget.",
+
+  "armorHud.configScreen.setting.pushSubtitles.name": "Sposta sottotitoli",
+  "armorHud.configScreen.setting.pushSubtitles.description": "Se il widget è ancorato nell'angolo in basso a destra, i sottotitoli saranno spinti verso l'alto dal widget.",
+
+  "armorHud.configScreen.setting.offsetX.name": "Offset X",
+  "armorHud.configScreen.setting.offsetX.description": "Offset della posizione del widget sull'asse orizzontale. Un numero positivo allontanerà il widget dal punto di ancoraggio, un numero negativo lo avvicinerà.",
+
+  "armorHud.configScreen.setting.offsetY.name": "Offset Y",
+  "armorHud.configScreen.setting.offsetY.description": "Offset della posizione del widget sull'asse orizzontale. Un numero positivo allontanerà il widget dal punto di ancoraggio, un numero negativo lo avvicinerà.",
+
+  "armorHud.configScreen.setting.widgetShown.name": "Visibilità widget",
+  "armorHud.configScreen.setting.widgetShown.description": "Questa impostazione definisce quando gli slot del widget HUD saranno mostrati.\n%1$s - gli slot sono sempre visibili.\n%2$s - tutti gli slot sono visibili se almeno uno degli slot dell'armatura non è vuoto.\n%3$s - solo gli slot non vuoti sono mostrati.",
+
+  "armorHud.configScreen.setting.reversed.name": "Inverti ordine degli slot dell'armatura.",
+  "armorHud.configScreen.setting.reversed.description": "Inverte l'ordine degli slot dell'armatura nel widget.",
+
+  "armorHud.configScreen.setting.iconsShown.name": "Mostra icone negli slot vuoti",
+  "armorHud.configScreen.setting.iconsShown.description": "Mostra speciali icone negli slot vuoti.",
+
+  "armorHud.configScreen.setting.warningShown.name": "Mostra un avviso di bassa durabilità",
+  "armorHud.configScreen.setting.warningShown.description": "Se abilitato, mostrerà un piccolo avviso sui pezzi d'armatura e armi con bassa durabilità.",
+
+  "armorHud.configScreen.setting.minDurabilityValue.name": "Valore minimo di durabilità",
+  "armorHud.configScreen.setting.minDurabilityValue.description": "Se la durabilità di un pezzo di armatura è inferiore o uguale a questo valore, un avviso sarà mostrato.",
+
+  "armorHud.configScreen.setting.minDurabilityPercentage.name": "Percentuale minima di durabilità",
+  "armorHud.configScreen.setting.minDurabilityPercentage.description": "Se la percentuale di durabilità di un oggetto mostrato è uguale o inferiore a questo valore, un avviso sarà mostrato.",
+
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Velocità di movimento dell'avviso",
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Questo parametro definirà quanto velocemente l'icona dell'avviso si muoverà in alto e in basso quando mostrata. Un valore più basso risulterà in un movimento più veloce. Imposta il valore su 0 se vuoi disabilitare questo movimento.",
+
+  "armorHud.configScreen.setting.style.name": "Stile degli slot",
+  "armorHud.configScreen.setting.style.description": "Questa impostazione definisce come gli slot saranno mostrati sullo schermo. Se gli slot del widget hanno un aspetto strano (per esempio, parti di texture che non corrispondono) con il tuo pacchetto di risorse, prova con altri stili per trovare quelli che funzionano e scegli quello che preferisci."
+}
+  
