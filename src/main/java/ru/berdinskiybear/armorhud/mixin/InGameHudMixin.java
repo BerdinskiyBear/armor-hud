@@ -5,7 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.options.AttackIndicator;
+import net.minecraft.client.option.AttackIndicator;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,12 +60,11 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private int armorHud_shift = 0;
 
     @Shadow
-    protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack);
+    protected abstract void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
 
     @Shadow
     protected abstract PlayerEntity getCameraPlayer();
 
-    @SuppressWarnings("deprecation")
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.AFTER))
     public void armorHud_renderArmorHud(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         // add this to profiler
@@ -87,7 +87,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
                 // here we count the items, save ones that we need to draw and their indexes
                 {
-                    List<ItemStack> armor = playerEntity.inventory.armor;
+                    List<ItemStack> armor = playerEntity.getInventory().armor;
                     armorHud_armorItems.clear();
                     armorHud_armorItemIndexes.clear();
                     for (int i = 0; i < armor.size(); i++) {
@@ -207,8 +207,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
                         armorWidgetX = armorWidgetX1;
                     }
 
-                    RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                    this.client.getTextureManager().bindTexture(armorHud_WIDGETS_TEXTURE);
+                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    RenderSystem.setShaderTexture(0, armorHud_WIDGETS_TEXTURE);
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
 
@@ -286,7 +287,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                             break;
                                     }
                                     Sprite sprite = this.client.getSpriteAtlas(armorHud_BLOCK_ATLAS_TEXTURE).apply(spriteId);
-                                    this.client.getTextureManager().bindTexture(sprite.getAtlas().getId());
+                                    RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
 
                                     int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
                                     drawSprite(matrices, armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, getZOffset() + 1, 16, 16, sprite);
@@ -295,14 +296,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
                         }
                     }
 
-                    RenderSystem.enableRescaleNormal();
                     RenderSystem.defaultBlendFunc();
 
                     // and at last i draw the armour items
                     for (int i = 0; i < armorHud_armorItems.size(); i++) {
                         int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
                         if (!armorHud_armorItems.get(i).isEmpty()) {
-                            this.renderHotbarItem(armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, tickDelta, playerEntity, armorHud_armorItems.get(i));
+                            this.renderHotbarItem(armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, tickDelta, playerEntity, armorHud_armorItems.get(i), i + 1);
                         }
                     }
                 }
@@ -361,7 +361,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         return this.client.currentScreen != null && this.client.currentScreen.getTitle() == ArmorHudMod.CONFIG_SCREEN_NAME ? ArmorHudMod.previewConfig : ArmorHudMod.getCurrentConfig();
     }
 
-    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;bindTexture(Lnet/minecraft/util/Identifier;)V", shift = At.Shift.AFTER))
+    @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V", shift = At.Shift.AFTER))
     public void calculateStatusEffectIconsOffset(MatrixStack matrices, CallbackInfo ci) {
         ArmorHudConfig currentConfig = this.armorHud_getCurrentArmorHudConfig();
         if (currentConfig.isEnabled() && currentConfig.getPushStatusEffectIcons()) {
@@ -370,7 +370,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                 int amount = 0;
                 PlayerEntity playerEntity = this.getCameraPlayer();
                 if (playerEntity != null) {
-                    for (ItemStack itemStack : playerEntity.inventory.armor) {
+                    for (ItemStack itemStack : playerEntity.getInventory().armor) {
                         if (!itemStack.isEmpty())
                             amount++;
                     }

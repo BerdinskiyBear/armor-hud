@@ -31,7 +31,7 @@ public class BossBarHudMixin {
                 PlayerEntity playerEntity = this.getCameraPlayer();
                 if (playerEntity != null) {
                     this.armorHud_armorItems.clear();
-                    for (ItemStack itemStack : playerEntity.inventory.armor) {
+                    for (ItemStack itemStack : playerEntity.getInventory().armor) {
                         if (!itemStack.isEmpty())
                             amount++;
                         if (!itemStack.isEmpty() || currentConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)

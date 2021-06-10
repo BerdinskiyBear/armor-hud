@@ -14,7 +14,7 @@ public class ArmorHudConfigReloader implements SimpleSynchronousResourceReloadLi
     }
 
     @Override
-    public void apply(ResourceManager manager) {
+    public void reload(ResourceManager manager) {
         ArmorHudMod.readCurrentConfig();
     }
 

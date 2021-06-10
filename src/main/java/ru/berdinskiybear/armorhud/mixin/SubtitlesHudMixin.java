@@ -1,6 +1,5 @@
 package ru.berdinskiybear.armorhud.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.SubtitlesHud;
 import net.minecraft.client.util.math.MatrixStack;
@@ -35,7 +34,7 @@ public class SubtitlesHudMixin {
                 PlayerEntity playerEntity = this.getCameraPlayer();
                 if (playerEntity != null) {
                     this.armorHud_armorItems.clear();
-                    for (ItemStack itemStack : playerEntity.inventory.armor) {
+                    for (ItemStack itemStack : playerEntity.getInventory().armor) {
                         if (!itemStack.isEmpty())
                             amount++;
                         if (!itemStack.isEmpty() || currentConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY)
@@ -65,10 +64,9 @@ public class SubtitlesHudMixin {
             this.offset = 0;
     }
 
-    @SuppressWarnings("deprecation")
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;translatef(FFF)V", shift = At.Shift.AFTER))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(DDD)V", shift = At.Shift.AFTER))
     public void offset(MatrixStack matrices, CallbackInfo ci) {
-        RenderSystem.translatef(0.0F, -((float) this.offset), 0.0F);
+        matrices.translate(0.0F, -((float) this.offset), 0.0F);
     }
 
     /**
