@@ -123,18 +123,15 @@ public abstract class InGameHudMixin extends DrawableHelper {
                         }
 
                         switch (currentArmorHudConfig.getAnchor()) {
-                            case TOP:
-                            case TOP_CENTER:
+                            case TOP, TOP_CENTER -> {
                                 verticalMultiplier = 1;
                                 verticalOffsetMultiplier = 0;
-                                break;
-                            case HOTBAR:
-                            case BOTTOM:
+                            }
+                            case HOTBAR, BOTTOM -> {
                                 verticalMultiplier = -1;
                                 verticalOffsetMultiplier = -1;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
+                            }
+                            default -> throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
                         }
 
                         int addedHotbarOffset;
@@ -167,38 +164,21 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                 throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
                         }
 
-                        int armorWidgetY1;
-                        switch (currentArmorHudConfig.getAnchor()) {
-                            case BOTTOM:
-                            case HOTBAR:
-                                armorWidgetY1 = this.scaledHeight - armorHud_height;
-                                break;
-                            case TOP:
-                            case TOP_CENTER:
-                                armorWidgetY1 = 0;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
-                        }
+                        int armorWidgetY1 = switch (currentArmorHudConfig.getAnchor()) {
+                            case BOTTOM, HOTBAR -> this.scaledHeight - armorHud_height;
+                            case TOP, TOP_CENTER -> 0;
+                            default -> throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
+                        };
 
                         slots = currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.NOT_EMPTY ? amount : 4;
                         widgetWidth = armorHud_width + ((slots - 1) * armorHud_step);
 
-                        int armorWidgetX1;
-                        switch (currentArmorHudConfig.getAnchor()) {
-                            case TOP_CENTER:
-                                armorWidgetX1 = this.scaledWidth / 2 - (widgetWidth / 2);
-                                break;
-                            case TOP:
-                            case BOTTOM:
-                                armorWidgetX1 = (widgetWidth - this.scaledWidth) * sideOffsetMultiplier;
-                                break;
-                            case HOTBAR:
-                                armorWidgetX1 = this.scaledWidth / 2 + ((armorHud_defaultHotbarOffset + addedHotbarOffset) * sideMultiplier) + (widgetWidth * sideOffsetMultiplier);
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
-                        }
+                        int armorWidgetX1 = switch (currentArmorHudConfig.getAnchor()) {
+                            case TOP_CENTER -> this.scaledWidth / 2 - (widgetWidth / 2);
+                            case TOP, BOTTOM -> (widgetWidth - this.scaledWidth) * sideOffsetMultiplier;
+                            case HOTBAR -> this.scaledWidth / 2 + ((armorHud_defaultHotbarOffset + addedHotbarOffset) * sideMultiplier) + (widgetWidth * sideOffsetMultiplier);
+                            default -> throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getAnchor());
+                        };
 
                         armorWidgetX1 += currentArmorHudConfig.getOffsetX() * sideMultiplier;
                         armorWidgetY1 += currentArmorHudConfig.getOffsetY() * verticalMultiplier;
@@ -215,30 +195,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
                     // here i draw the slots
                     switch (currentArmorHudConfig.getStyle()) {
-                        case STYLE_1_E:
-                            this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
-                            break;
-                        case STYLE_1_H:
-                            this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
-                            break;
-                        case STYLE_1_S:
-                            this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
-                            break;
-                        case STYLE_2_E:
-                            this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
-                            break;
-                        case STYLE_2_H:
-                            this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
-                            break;
-                        case STYLE_2_S:
-                            this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
-                            break;
-                        case STYLE_3:
+                        case STYLE_1_E -> this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
+                        case STYLE_1_H -> this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
+                        case STYLE_1_S -> this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
+                        case STYLE_2_E -> this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
+                        case STYLE_2_H -> this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
+                        case STYLE_2_S -> this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
+                        case STYLE_3 -> {
                             this.drawTexture(matrices, armorWidgetX, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
                             for (int i = 0; i < slots; i++)
                                 this.drawTexture(matrices, armorWidgetX + (armorHud_width - armorHud_step) / 2 + i * armorHud_step, armorWidgetY, 24 + (armorHud_width - armorHud_step) / 2, 23, armorHud_step, armorHud_height);
                             this.drawTexture(matrices, armorWidgetX + widgetWidth - (armorHud_width - armorHud_step) / 2, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
-                            break;
+                        }
                     }
 
                     // here i draw warning icons if necessary
@@ -270,22 +238,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
                             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
                             for (int i = 0; i < armorHud_armorItems.size(); i++) {
                                 if (armorHud_armorItems.get(i).isEmpty()) {
-                                    Identifier spriteId;
-                                    switch (i) {
-                                        case 0:
-                                            spriteId = armorHud_EMPTY_BOOTS_SLOT_TEXTURE;
-                                            break;
-                                        case 1:
-                                            spriteId = armorHud_EMPTY_LEGGINGS_SLOT_TEXTURE;
-                                            break;
-                                        case 2:
-                                            spriteId = armorHud_EMPTY_CHESTPLATE_SLOT_TEXTURE;
-                                            break;
-                                        case 3:
-                                        default:
-                                            spriteId = armorHud_EMPTY_HELMET_SLOT_TEXTURE;
-                                            break;
-                                    }
+                                    Identifier spriteId = switch (i) {
+                                        case 0 -> armorHud_EMPTY_BOOTS_SLOT_TEXTURE;
+                                        case 1 -> armorHud_EMPTY_LEGGINGS_SLOT_TEXTURE;
+                                        case 2 -> armorHud_EMPTY_CHESTPLATE_SLOT_TEXTURE;
+                                        case 3 -> armorHud_EMPTY_HELMET_SLOT_TEXTURE;
+                                        default -> throw new IllegalStateException("Unexpected value: " + i);
+                                    };
                                     Sprite sprite = this.client.getSpriteAtlas(armorHud_BLOCK_ATLAS_TEXTURE).apply(spriteId);
                                     RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
 

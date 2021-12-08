@@ -29,7 +29,7 @@
     "armor_hud.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11"
+    "fabricloader": ">=0.12.8"
   },
   "recommends": {
     "fabric-resource-loader-v0": "*",
