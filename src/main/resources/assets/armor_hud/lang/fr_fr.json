@@ -1,0 +1,55 @@
+{
+  "armorHud.configScreen.title": "Configuration de BerdinskiyBear's Armor HUD",
+  "armorHud.configScreen.category": "Catégorie",
+
+  "armorHud.configScreen.setting.enable.name": "Activé",
+  "armorHud.configScreen.setting.enable.description": "Bouton principal d'activation du monde.",
+
+  "armorHud.configScreen.setting.anchor.name": "Attaché à",
+  "armorHud.configScreen.setting.anchor.description": "Défini à quoi le widget de l'ATH est attaché.\n%1$s - le widget est mis au milieu du dessus de l'écran.\n%2$s - le widget est mis dans le coin supérieur du côté choisi.\n%3$s - le widget est mis dans le coin inférieur du côté choisi.\n%4$s - le widget est mis à coté de la barre de raccourcis",
+
+  "armorHud.configScreen.setting.side.name": "Côté",
+  "armorHud.configScreen.setting.side.description": "Coté où le widget est affiché.\nSi l'option %1$s est utilisée alors ce paramètre ne fais rien.",
+
+  "armorHud.configScreen.setting.offhandSlot.name": "Fonctionnement de la case de la main secondaire",
+  "armorHud.configScreen.setting.offhandSlot.description": "Ce paramètre défini comment le widget réagis à la case de la main secondaire et à l'icône d'attaque si il est attaché à la barre de raccourcis.\n%1$s - le widget ne se déplace jamais.\n%2$s - le widget se déplace si la case de la main secondaire ou l'icône est affichée.\n%3$s - le widget laisse toujours de la place.\nCe paramètre ne fait rien si le widget n'est pas attaché à la barre de raccourcis.",
+
+  "armorHud.configScreen.setting.pushBossbars.name": "Déplacer la barre de boss",
+  "armorHud.configScreen.setting.pushBossbars.description": "Si le widget est en haut au milieu, les barres de boss vont être déplacées vers le bas.",
+
+  "armorHud.configScreen.setting.pushStatusEffectIcons.name": "Déplacer les icônes d'effet de potions",
+  "armorHud.configScreen.setting.pushStatusEffectIcons.description": "Si le widget est en haut à droite, les icônes d'effet de potions vont être déplacées vers le bas.",
+
+  "armorHud.configScreen.setting.pushSubtitles.name": "Déplacer les sous-titres",
+  "armorHud.configScreen.setting.pushSubtitles.description": "Si le widget est en bas à droite, les sous-titres vont être déplacées vers le haut.",
+
+  "armorHud.configScreen.setting.offsetX.name": "Décalage en X",
+  "armorHud.configScreen.setting.offsetX.description": "Décalage du widget sur l'axe horizontal. Les nombres positifs éloignent le widget du point d'ancrage et les négatifs le rapproche.",
+
+  "armorHud.configScreen.setting.offsetY.name": "Décalage en Y",
+  "armorHud.configScreen.setting.offsetY.description": "Décalage du widget sur l'axe vertical. Les nombres positifs éloignent le widget du point d'ancrage et les négatifs le rapproche.",
+
+  "armorHud.configScreen.setting.widgetShown.name": "Affichage du widget",
+  "armorHud.configScreen.setting.widgetShown.description": "Ce paramètres définis quand les cases sont affichées.\n%1$s - les cases sont toujours affichées.\n%2$s - toutes les cases sont affichées si au moins une case n'est pas vide.\n%3$s - seul les cases utilisées sont affichées.",
+
+  "armorHud.configScreen.setting.reversed.name": "Ordre inverse des pièces d'armure",
+  "armorHud.configScreen.setting.reversed.description": "Inverse l'ordre des pièces d'armures.",
+
+  "armorHud.configScreen.setting.iconsShown.name": "Montrer les icônes des cases vides",
+  "armorHud.configScreen.setting.iconsShown.description": "Montre des icônes spéciales dans les cases vides.",
+
+  "armorHud.configScreen.setting.warningShown.name": "Afficher l'alerte de durabilité faible",
+  "armorHud.configScreen.setting.warningShown.description": "Fait apparaitre une alerte au-dessus de la case d'une pièce d'armue si sa durabilité est faible.",
+
+  "armorHud.configScreen.setting.minDurabilityValue.name": "Valeur minimale de durabilité",
+  "armorHud.configScreen.setting.minDurabilityValue.description": "Si la durabilité d'une pièce d'armure est plus petit ou égal à cette valeur l'alerte sera affichée.",
+
+  "armorHud.configScreen.setting.minDurabilityPercentage.name": "Pourcentage minimal de durabilité",
+  "armorHud.configScreen.setting.minDurabilityPercentage.description": "Si la durabilité d'une pièce d'armure est plus petit ou égal à ce pourcentage l'alerte sera affichée.",
+
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.name": "Durée de l'animation de l'alerte de durabilité",
+  "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Ce paramètre défini la durée de l'animation de l'alerte de durabilité. Diminuer ce nombre augmente diminue la durée que prends l'animation à se jouer. Mettez cette valeur à 0 pour retire l'animation.",
+
+  "armorHud.configScreen.setting.style.name": "Style des cases du widget",
+  "armorHud.configScreen.setting.style.description": "Ce paramètre change l'apparence du widget. Si les cases du widget vous semblent bizzares (par exemple, si des parties de la textures ne rendent pas bien) avec votre pack de ressources , vous devriez essayer d'autres styles pour en trouver un qui rend bien et choisir celui que vous préférez."
+}
