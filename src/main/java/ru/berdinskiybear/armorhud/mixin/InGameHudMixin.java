@@ -154,7 +154,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                         (
                                                 playerEntity.getMainArm() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
                                                         || playerEntity.getMainArm() == Arm.RIGHT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.RIGHT
-                                        ) && this.client.options.attackIndicator == AttackIndicator.HOTBAR
+                                        ) && this.client.options.getAttackIndicator().getValue() == AttackIndicator.HOTBAR
                                 )
                                     addedHotbarOffset = armorHud_defaultHotbarAttackIndicatorOffset;
                                 else
