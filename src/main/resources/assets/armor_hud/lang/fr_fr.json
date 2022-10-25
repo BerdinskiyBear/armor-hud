@@ -51,5 +51,5 @@
   "armorHud.configScreen.setting.warningIconBobbingIntervalEntry.description": "Ce paramètre défini la durée de l'animation de l'alerte de durabilité. Diminuer ce nombre augmente diminue la durée que prends l'animation à se jouer. Mettez cette valeur à 0 pour retire l'animation.",
 
   "armorHud.configScreen.setting.style.name": "Style des cases du widget",
-  "armorHud.configScreen.setting.style.description": "Ce paramètre change l'apparence du widget. Si les cases du widget vous semblent bizzares (par exemple, si des parties de la textures ne rendent pas bien) avec votre pack de ressources , vous devriez essayer d'autres styles pour en trouver un qui rend bien et choisir celui que vous préférez."
+  "armorHud.configScreen.setting.style.description": "Ce paramètre change l'apparence du widget. Si les cases du widget vous semblent bizzares (par exemple, si des parties de la textures ne rendent pas bien) avec votre pack de ressources, vous devriez essayer d'autres styles pour en trouver un qui rend bien et choisir celui que vous préférez."
 }
