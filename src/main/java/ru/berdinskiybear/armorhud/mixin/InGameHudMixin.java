@@ -187,7 +187,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                         armorWidgetX = armorWidgetX1;
                     }
 
-                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                    RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                     RenderSystem.setShaderTexture(0, armorHud_WIDGETS_TEXTURE);
                     RenderSystem.enableBlend();
