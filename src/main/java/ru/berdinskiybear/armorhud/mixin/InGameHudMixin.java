@@ -246,7 +246,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                         default -> throw new IllegalStateException("Unexpected value: " + i);
                                     };
                                     Sprite sprite = this.client.getSpriteAtlas(armorHud_BLOCK_ATLAS_TEXTURE).apply(spriteId);
-                                    RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
+                                    RenderSystem.setShaderTexture(0, sprite.getAtlasId());
 
                                     int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
                                     drawSprite(matrices, armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, getZOffset() + 1, 16, 16, sprite);
