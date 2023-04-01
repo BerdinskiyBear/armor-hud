@@ -64,7 +64,7 @@ public class SubtitlesHudMixin {
             this.offset = 0;
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(DDD)V", shift = At.Shift.AFTER))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V", shift = At.Shift.AFTER))
     public void offset(MatrixStack matrices, CallbackInfo ci) {
         matrices.translate(0.0F, -((float) this.offset), 0.0F);
     }
