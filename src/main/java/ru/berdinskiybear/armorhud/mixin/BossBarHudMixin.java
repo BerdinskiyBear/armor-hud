@@ -21,7 +21,7 @@ public class BossBarHudMixin {
 
     private final List<ItemStack> armorHud_armorItems = new ArrayList<>(4);
 
-    @ModifyVariable(method = "render", at = @At("STORE"), ordinal = 1)
+    @ModifyVariable(method = "render", at = @At(value = "STORE"), ordinal = 1)
     public int anInt(int a) {
         ArmorHudConfig currentConfig = this.armorHud_getCurrentArmorHudConfig();
         if (currentConfig.isEnabled() && currentConfig.getPushBossbars()) {

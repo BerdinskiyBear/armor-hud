@@ -139,13 +139,9 @@ public abstract class InGameHudMixin {
 
                         int addedHotbarOffset;
                         switch (currentArmorHudConfig.getOffhandSlotBehavior()) {
-                            case ALWAYS_IGNORE:
-                                addedHotbarOffset = 0;
-                                break;
-                            case ALWAYS_LEAVE_SPACE:
-                                addedHotbarOffset = Math.max(armorHud_defaultOffhandSlotOffset, armorHud_defaultHotbarAttackIndicatorOffset);
-                                break;
-                            case ADHERE:
+                            case ALWAYS_IGNORE -> addedHotbarOffset = 0;
+                            case ALWAYS_LEAVE_SPACE -> addedHotbarOffset = Math.max(armorHud_defaultOffhandSlotOffset, armorHud_defaultHotbarAttackIndicatorOffset);
+                            case ADHERE -> {
                                 if (
                                         (
                                                 playerEntity.getMainArm().getOpposite() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
@@ -162,9 +158,8 @@ public abstract class InGameHudMixin {
                                     addedHotbarOffset = armorHud_defaultHotbarAttackIndicatorOffset;
                                 else
                                     addedHotbarOffset = 0;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
+                            }
+                            default -> throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
                         }
 
                         int armorWidgetY1 = switch (currentArmorHudConfig.getAnchor()) {
@@ -258,7 +253,6 @@ public abstract class InGameHudMixin {
                                         default -> throw new IllegalStateException("Unexpected value: " + i);
                                     };
                                     Sprite sprite = this.client.getSpriteAtlas(armorHud_BLOCK_ATLAS_TEXTURE).apply(spriteId);
-                                    // RenderSystem.setShaderTexture(0, sprite.getAtlasId());
 
                                     int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
                                     context.drawSprite(armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, 0, 16, 16, sprite);
