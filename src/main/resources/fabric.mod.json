@@ -7,20 +7,23 @@
   "authors": [
     "BerdinskiyBear"
   ],
-  "contributors": [],
+  "contributors": [
+    "Julienraptor01",
+    "PolpOnline",
+    "uku3lig"
+  ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/berdinskiybears-armor-hud",
+    "sources": "https://github.com/BerdinskiyBear/armor-hud",
     "issues": "https://github.com/BerdinskiyBear/armor-hud/issues"
   },
   "license": "MIT",
   "icon": "assets/armor_hud/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [],
     "client": [
       "ru.berdinskiybear.armorhud.ArmorHudModEntrypoint"
     ],
-    "server": [],
     "modmenu": [
       "ru.berdinskiybear.armorhud.config.ArmorHudModmenuIntegration"
     ]
@@ -29,13 +32,12 @@
     "armor_hud.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.18",
-    "minecraft": "~1.19",
-    "java": ">=17"
+    "fabricloader": ">=${fabricloaderversion}",
+    "minecraft": "~${mcversion}",
+    "fabric-api": ">=${fabricapiversion}",
+    "cloth-config2": ">=${clothconfigversion}"
   },
   "recommends": {
-    "fabric-resource-loader-v0": "*",
-    "cloth-config2": ">=10.0.96",
-    "modmenu": ">=6.1"
+    "modmenu": ">=${modmenuversion}"
   }
 }

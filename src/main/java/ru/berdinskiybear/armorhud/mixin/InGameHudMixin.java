@@ -3,11 +3,10 @@ package ru.berdinskiybear.armorhud.mixin;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.option.AttackIndicator;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
@@ -23,11 +22,12 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.berdinskiybear.armorhud.ArmorHudMod;
 import ru.berdinskiybear.armorhud.config.ArmorHudConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(InGameHud.class)
-public abstract class InGameHudMixin extends DrawableHelper {
+public abstract class InGameHudMixin {
     @Shadow @Final private MinecraftClient client;
     @Shadow @Final private Random random;
 
@@ -59,13 +59,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private int armorHud_shift = 0;
 
     @Shadow
-    protected abstract void renderHotbarItem(MatrixStack matrixStack, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
+    protected abstract void renderHotbarItem(DrawContext context, int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed);
 
     @Shadow
     protected abstract PlayerEntity getCameraPlayer();
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.AFTER))
-    public void armorHud_renderArmorHud(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/gui/DrawContext;)V", shift = At.Shift.AFTER))
+    public void armorHud_renderArmorHud(DrawContext context, float tickDelta, CallbackInfo ci) {
         // add this to profiler
         this.client.getProfiler().push("armorHud");
 
@@ -112,8 +112,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     final int slots;
 
                     //
-                    matrices.push();
-                    matrices.translate(0, 0, 200);
+                    context.getMatrices().push();
+                    context.getMatrices().translate(0, 0, 200);
 
                     // here I calculate position of the widget, its width and all sorts of multipliers based of current config
                     {
@@ -139,13 +139,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
                         int addedHotbarOffset;
                         switch (currentArmorHudConfig.getOffhandSlotBehavior()) {
-                            case ALWAYS_IGNORE:
-                                addedHotbarOffset = 0;
-                                break;
-                            case ALWAYS_LEAVE_SPACE:
-                                addedHotbarOffset = Math.max(armorHud_defaultOffhandSlotOffset, armorHud_defaultHotbarAttackIndicatorOffset);
-                                break;
-                            case ADHERE:
+                            case ALWAYS_IGNORE -> addedHotbarOffset = 0;
+                            case ALWAYS_LEAVE_SPACE -> addedHotbarOffset = Math.max(armorHud_defaultOffhandSlotOffset, armorHud_defaultHotbarAttackIndicatorOffset);
+                            case ADHERE -> {
                                 if (
                                         (
                                                 playerEntity.getMainArm().getOpposite() == Arm.LEFT && currentArmorHudConfig.getSide() == ArmorHudConfig.Side.LEFT
@@ -162,9 +158,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                     addedHotbarOffset = armorHud_defaultHotbarAttackIndicatorOffset;
                                 else
                                     addedHotbarOffset = 0;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
+                            }
+                            default -> throw new IllegalStateException("Unexpected value: " + currentArmorHudConfig.getOffhandSlotBehavior());
                         }
 
                         int armorWidgetY1 = switch (currentArmorHudConfig.getAnchor()) {
@@ -192,42 +187,41 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
                     //RenderSystem.setShader(GameRenderer::getPositionTexProgram); // maybe that is redundant
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                    RenderSystem.setShaderTexture(0, armorHud_WIDGETS_TEXTURE);
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
 
                     // here I draw the slots
                     {
-                        matrices.push();
-                        matrices.translate(0, 0, -91);
+                        context.getMatrices().push();
+                        context.getMatrices().translate(0, 0, -91);
                         switch (currentArmorHudConfig.getStyle()) {
-                            case STYLE_1_E -> this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
-                            case STYLE_1_H -> this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
-                            case STYLE_1_S -> this.drawSlots1(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
-                            case STYLE_2_E -> this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, 3);
-                            case STYLE_2_H -> this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
-                            case STYLE_2_S -> this.drawSlots2(matrices, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
+                            case STYLE_1_E -> this.drawSlots1(context, armorWidgetY, armorWidgetX, widgetWidth, 3);
+                            case STYLE_1_H -> this.drawSlots1(context, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
+                            case STYLE_1_S -> this.drawSlots1(context, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
+                            case STYLE_2_E -> this.drawSlots2(context, armorWidgetY, armorWidgetX, widgetWidth, 3);
+                            case STYLE_2_H -> this.drawSlots2(context, armorWidgetY, armorWidgetX, widgetWidth, armorHud_width / 2);
+                            case STYLE_2_S -> this.drawSlots2(context, armorWidgetY, armorWidgetX, widgetWidth, (armorHud_width + armorHud_step) / 2);
                             case STYLE_3 -> {
-                                drawTexture(matrices, armorWidgetX, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
+                                context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
                                 for (int i = 0; i < slots; i++)
-                                    drawTexture(matrices, armorWidgetX + (armorHud_width - armorHud_step) / 2 + i * armorHud_step, armorWidgetY, 24 + (armorHud_width - armorHud_step) / 2, 23, armorHud_step, armorHud_height);
-                                drawTexture(matrices, armorWidgetX + widgetWidth - (armorHud_width - armorHud_step) / 2, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
+                                    context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX + (armorHud_width - armorHud_step) / 2 + i * armorHud_step, armorWidgetY, 24 + (armorHud_width - armorHud_step) / 2, 23, armorHud_step, armorHud_height);
+                                context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX + widgetWidth - (armorHud_width - armorHud_step) / 2, armorWidgetY, 24, 23, (armorHud_width - armorHud_step) / 2, armorHud_height);
                             }
                         }
-                        matrices.pop();
+                        context.getMatrices().pop();
                     }
 
                     // here I draw warning icons if necessary
                     if (currentArmorHudConfig.isWarningShown()) {
-                        matrices.push();
-                        matrices.translate(0, 0, 90);
+                        context.getMatrices().push();
+                        context.getMatrices().translate(0, 0, 90);
                         for (int i = 0; i < armorHud_armorItems.size(); i++) {
                             int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
                             if (!armorHud_armorItems.get(i).isEmpty() && armorHud_armorItems.get(i).isDamageable()) {
                                 int damage = armorHud_armorItems.get(i).getDamage();
                                 int maxDamage = armorHud_armorItems.get(i).getMaxDamage();
                                 if ((1.0F - ((float) damage) / ((float) maxDamage) <= currentArmorHudConfig.getMinDurabilityPercentage()) || (maxDamage - damage <= currentArmorHudConfig.getMinDurabilityValue())) {
-                                    drawTexture(matrices,
+                                    context.drawTexture(armorHud_WIDGETS_TEXTURE,
                                             armorWidgetX + (armorHud_step * iReversed) + armorHud_warningHorizontalOffset,
                                             armorWidgetY
                                                     + (armorHud_height * (verticalOffsetMultiplier + 1))
@@ -240,14 +234,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                 }
                             }
                         }
-                        matrices.pop();
+                        context.getMatrices().pop();
                     }
 
                     // here I blend in slot icons if so tells the current config
                     if (currentArmorHudConfig.getIconsShown()) {
                         if (currentArmorHudConfig.getWidgetShown() != ArmorHudConfig.WidgetShown.NOT_EMPTY && (amount > 0 || currentArmorHudConfig.getWidgetShown() == ArmorHudConfig.WidgetShown.ALWAYS)) {
-                            matrices.push();
-                            matrices.translate(0, 0, -90);
+                            context.getMatrices().push();
+                            context.getMatrices().translate(0, 0, -90);
                             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_COLOR, GlStateManager.DstFactor.ONE, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
                             for (int i = 0; i < armorHud_armorItems.size(); i++) {
                                 if (armorHud_armorItems.get(i).isEmpty()) {
@@ -259,14 +253,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
                                         default -> throw new IllegalStateException("Unexpected value: " + i);
                                     };
                                     Sprite sprite = this.client.getSpriteAtlas(armorHud_BLOCK_ATLAS_TEXTURE).apply(spriteId);
-                                    RenderSystem.setShaderTexture(0, sprite.getAtlasId());
 
                                     int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
-                                    drawSprite(matrices, armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, 0, 16, 16, sprite);
+                                    context.drawSprite(armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, 0, 16, 16, sprite);
                                 }
                             }
                             RenderSystem.defaultBlendFunc();
-                            matrices.pop();
+                            context.getMatrices().pop();
                         }
                     }
 
@@ -274,12 +267,12 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     for (int i = 0; i < armorHud_armorItems.size(); i++) {
                         int iReversed = currentArmorHudConfig.isReversed() ? (armorHud_armorItems.size() - i - 1) : i;
                         if (!armorHud_armorItems.get(i).isEmpty()) {
-                            this.renderHotbarItem(matrices, armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, tickDelta, playerEntity, armorHud_armorItems.get(i), i + 1);
+                            this.renderHotbarItem(context, armorWidgetX + (armorHud_step * iReversed) + 3, armorWidgetY + 3, tickDelta, playerEntity, armorHud_armorItems.get(i), i + 1);
                         }
                     }
 
                     // remove my translations
-                    matrices.pop();
+                    context.getMatrices().pop();
                 }
             }
         }
@@ -288,18 +281,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.client.getProfiler().pop();
     }
 
-    private void drawSlots1(MatrixStack matrices, int armorWidgetY, int armorWidgetX, int widgetWidth, int endPieceLength) {
-        drawTexture(matrices, armorWidgetX, armorWidgetY, 0, 0, widgetWidth - endPieceLength, armorHud_height);
-        drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 182 - endPieceLength, 0, endPieceLength, armorHud_height);
+    private void drawSlots1(DrawContext context, int armorWidgetY, int armorWidgetX, int widgetWidth, int endPieceLength) {
+        context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX, armorWidgetY, 0, 0, widgetWidth - endPieceLength, armorHud_height);
+        context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 182 - endPieceLength, 0, endPieceLength, armorHud_height);
     }
 
-    private void drawSlots2(MatrixStack matrices, int armorWidgetY, int armorWidgetX, int widgetWidth, int endPieceLength) {
-        drawTexture(matrices, armorWidgetX, armorWidgetY, 24, 23, endPieceLength, armorHud_height);
+    private void drawSlots2(DrawContext context, int armorWidgetY, int armorWidgetX, int widgetWidth, int endPieceLength) {
+        context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX, armorWidgetY, 24, 23, endPieceLength, armorHud_height);
         if (widgetWidth > endPieceLength * 2)
-            drawTexture(matrices, armorWidgetX + endPieceLength, armorWidgetY, endPieceLength, 0, widgetWidth - 2 * endPieceLength, armorHud_height);
+            context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX + endPieceLength, armorWidgetY, endPieceLength, 0, widgetWidth - 2 * endPieceLength, armorHud_height);
         if (widgetWidth - endPieceLength < endPieceLength)
             endPieceLength = widgetWidth - endPieceLength;
-        drawTexture(matrices, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 24 + armorHud_width - endPieceLength, 23, endPieceLength, armorHud_height);
+        context.drawTexture(armorHud_WIDGETS_TEXTURE, armorWidgetX + widgetWidth - endPieceLength, armorWidgetY, 24 + armorHud_width - endPieceLength, 23, endPieceLength, armorHud_height);
     }
 
     private float armorHud_getCycleProgress(int index, ArmorHudConfig currentArmorHudConfig) {
@@ -337,7 +330,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     }
 
     @Inject(method = "renderStatusEffectOverlay", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", shift = At.Shift.BY, by = 2))
-    public void calculateStatusEffectIconsOffset(MatrixStack matrices, CallbackInfo ci) {
+    public void calculateStatusEffectIconsOffset(DrawContext context, CallbackInfo ci) {
         ArmorHudConfig currentConfig = this.armorHud_getCurrentArmorHudConfig();
         if (currentConfig.isEnabled() && currentConfig.getPushStatusEffectIcons()) {
             int add = 0;
@@ -373,7 +366,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             this.armorHud_shift = 0;
     }
 
-    @ModifyVariable(method = "renderStatusEffectOverlay", at = @At(value = "STORE", ordinal = 0), ordinal = 3)
+    @ModifyVariable(method = "renderStatusEffectOverlay", at = @At(value = "STORE"), ordinal = 3)
     public int statusEffectIconsOffset(int y) {
         return y + this.armorHud_shift;
     }
